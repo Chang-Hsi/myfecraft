@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SEO 初學者教學 — Medium 風格排版</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">SEO初學者教學，搞懂 SEO 讓你網站訂單接不完</h1>
+      </header>
+
+      <article class="content" id="article">
+
+        <p>
+          如果你是第一次接觸 SEO，請先記住一件事：<strong>SEO
+            的目標不是討好搜尋引擎，而是讓使用者更快找到真正有用的答案</strong>。本教學會用最少的行話，帶你從「搜尋如何運作」一路走到「關鍵字研究、內容撰寫、技術優化與站外權威」，最後用一步步的案例把流程走完。做完這些，你不只會看懂報表，更會知道下一步要做什麼，並把它做對。<br>
+          （參考：<a href="https://developers.google.com/search/docs/fundamentals/how-search-works?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google — How Search works</a>）
+        </p>
+
+        <h2 id="section-1">1. 定義與重要性</h2>
+
+        <h3>前導段</h3>
+        <p>
+          SEO（Search Engine Optimization，搜尋引擎優化）是一組方法與流程，讓你的網頁更容易被
+          <strong>抓取（Crawl）</strong>、<strong>收錄（Index）</strong>、並在 <strong>排名（Rank）</strong> 時有更好表現。對商業來說，SEO
+          是最具「長期複利」的行銷投資：文章持續帶來自然流量、轉換與品牌信任。
+        </p>
+
+        <h3>A. 什麼是 SEO</h3>
+        <ul>
+          <li>
+            <strong>不是廣告、不是快速秘技</strong>：搜尋引擎不接受付費換較高排名；即使遵循規範，也<strong>不保證一定會收錄或顯示</strong>。重點在於持續輸出對人有用、對站點可被理解的內容與結構。
+            (<a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google SEO Starter Guide</a>)
+          </li>
+          <li><strong>目標</strong>：在對的關鍵字下，讓對的人在對的時候找到你，並在頁面上完成你要的行動（例如詢價、下單、預約）。</li>
+        </ul>
+
+        <h3>B. 為什麼重要</h3>
+        <ul>
+          <li><strong>可預測、可累積</strong>：不同於廣告拉掉預算就歸零，SEO 的內容與權威會累積。</li>
+          <li><strong>高意圖流量</strong>：用戶在搜尋框裡輸入的每個詞，都是需求與痛點的線索。</li>
+          <li><strong>降低整體獲客成本（CAC）</strong>：當自然流量占比提高，同樣預算下的營收槓桿更大。</li>
+        </ul>
+
+        <h3>C. SEO 三個層面（預告）</h3>
+        <p>技術、內容、站外 — 三條線並行。</p>
+        <p class="muted">章末延伸閱讀：<a
+            href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google《SEO 入門指南》</a></p>
+
+        <h2 id="section-2">2. 原理與流程</h2>
+
+        <figure class="mid">
+          <img
+            src="https://www.yesharris.com/wp-content/uploads/2023/03/%E6%90%9C%E5%B0%8B%E5%BC%95%E6%93%8E%E9%81%8B%E4%BD%9C%E5%8E%9F%E7%90%86.png"
+            alt="抓取-索引-排名 流程">
+          <figcaption>流程圖：抓取 → 索引 → 排名（佔位圖）</figcaption>
+        </figure>
+
+        <figure class="mid">
+          <img src="https://www.yesharris.com/wp-content/uploads/2024/12/02-crawl-index-new.png" alt="蜘蛛抓取示意">
+          <figcaption>示意：搜尋引擎爬蟲（Spider / Bot）如何探索站點</figcaption>
+        </figure>
+
+        <h3>A. 抓取（Crawl）：找到頁面</h3>
+        <ul>
+          <li>Googlebot 會循著網頁連結與你提供的站點地圖（Sitemap）來探索新內容。</li>
+          <li>你可用 <strong>robots.txt</strong> 指示「哪些路徑可抓、哪些不抓」，但它不是拿來「阻止收錄」的工具（要阻止收錄請用 <code>noindex</code> 或權限保護）。 (<a
+              href="https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">robots.txt 指南</a>)</li>
+          <li>站點地圖可加速新頁面被發現，並標示更新時間/多語版本等訊息。 (<a
+              href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Sitemaps 概述</a>)</li>
+        </ul>
+
+        <h3>B. 索引（Index）：理解與歸檔</h3>
+        <p>
+          搜尋引擎會解析你的 HTML、JavaScript、結構化資料（Schema），決定頁面內容主題與可顯示的強化結果（Rich
+          Results）。重複或相似內容應指定<strong>正規網址（Canonical）</strong>，避免權重分散與索引混亂。 (<a
+            href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Structured Data 介紹</a>)
+        </p>
+
+        <h3>C. 排名（Rank）：決定誰在前</h3>
+        <p>
+          排名會考慮內容的<strong>幫助性/可靠性</strong>、連結、使用體驗等多重訊號。Google 強調：不接受付費換更高排名。核心網頁生命力（Core Web Vitals）中的
+          <strong>INP</strong> 已在 2024/3 取代 FID，代表互動回饋品質；可透過 Search Console 與 PageSpeed Insights 量測與改善。 (<a
+            href="https://developers.google.com/search/blog/2023/05/introducing-inp?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">INP 介紹</a>)
+        </p>
+        <p class="muted">章末延伸閱讀：<a
+            href="https://developers.google.com/search/docs/crawling-indexing?utm_source=chatgpt.com" target="_blank"
+            rel="noopener">Google《抓取 & 索引》總覽</a></p>
+
+        <h2 id="section-3">3. 三大面向</h2>
+
+        <h3>3.1 技術</h3>
+        <figure class="mid">
+          <img src="https://www.yesharris.com/wp-content/uploads/2024/12/04-SEO-learning-guide.png" alt="技術要點資訊圖">
+          <figcaption>技術要點：抓取、索引、理解、速度、安全（佔位）</figcaption>
+        </figure>
+
+        <p>
+          <strong>關鍵目標</strong>：讓搜尋引擎<strong>抓得到</strong>、<strong>看得懂</strong>、<strong>載得快</strong>、<strong>不會誤會</strong>。
+        </p>
+
+        <ul>
+          <li><strong>可抓取</strong>：良好的內部連結、乾淨的 robots.txt、提供 Sitemap。 (<a
+              href="https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">robots.txt</a>)</li>
+          <li><strong>可索引/可理解</strong>：正確使用
+            <code>title</code>/<code>meta description</code>/<code>alt</code>/<code>heading</code>；以 Schema
+            提示內容語意與可出現的豐富結果。 (<a
+              href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Schema 說明</a>)
+          </li>
+          <li><strong>正規化</strong>：重複內容指定 <code>rel="canonical"</code>；避免參數頁/排序頁被錯誤收錄。 (<a
+              href="https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Canonical 指南</a>)</li>
+          <li><strong>行動優先 & 響應式</strong>：以響應式為首選做法；確保行動版內容與桌機一致。 (<a
+              href="https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Mobile-first 指南</a>)</li>
+          <li><strong>速度 & 體驗</strong>：關注 LCP/CLS/INP，使用 PageSpeed Insights 與 Lighthouse 找瓶頸並持續監測。 (<a
+              href="https://pagespeed.web.dev/?utm_source=chatgpt.com" target="_blank" rel="noopener">PageSpeed
+              Insights</a>)</li>
+          <li><strong>安全</strong>：全站 HTTPS（雖是輕量訊號，但屬良好實務）。</li>
+        </ul>
+
+        <p class="muted">延伸閱讀：<a href="https://developers.google.com/search/docs/essentials?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google《Search Essentials》</a></p>
+
+        <h3>3.2 內容</h3>
+        <figure class="mid">
+          <img src="https://seo.whoops.com.tw/wp-content/uploads/2025/03/seo-multifaceted-advantages.png" alt="內容要點資訊圖">
+          <figcaption>內容要點：使用者意圖、主題聚焦、可執行價值、原創可信</figcaption>
+        </figure>
+
+        <p><strong>核心信念</strong>：<strong>為人寫、而不是為機器堆字</strong>。</p>
+
+        <ul>
+          <li><strong>理解使用者意圖</strong>：分辨「資訊型 / 導航型 / 交易型」；同一關鍵字可有多種意圖，內容需對準。</li>
+          <li><strong>主題聚焦與結構</strong>：一頁一主題；H2/H3 條理清楚，摘要與重點列表降低跳出。</li>
+          <li><strong>可執行價值</strong>：示例、步驟、檢核表、下載資源。</li>
+          <li><strong>原創性與信任</strong>：作者署名、來源引用、清楚的聯絡/公司資訊；展現 E-E-A-T 的經驗與專業。 (<a
+              href="https://guidelines.raterhub.com/searchqualityevaluatorguidelines.pdf?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">評測員指南</a>)</li>
+          <li><strong>關鍵字自然佈局</strong>：以讀者會搜尋的語彙命名標題與段落，而不是堆疊字詞。</li>
+          <li><strong>更新維護</strong>：過時內容（價格、規格、流程）要修正，避免誤導。</li>
+        </ul>
+
+        <h3>3.3 站外</h3>
+        <figure class="mid">
+          <img src="https://seo.whoops.com.tw/wp-content/uploads/2025/03/off-site-seo-optimization.png"
+            alt="高品質 vs 低品質 連結對比">
+          <figcaption>站外連結對比：高品質 vs 低品質（佔位）</figcaption>
+        </figure>
+
+        <p><strong>站外訊號 = 別人對你的信任</strong></p>
+        <ul>
+          <li><strong>高品質連結</strong>：來自主題相關、可信網站的自然引用。</li>
+          <li><strong>合規的出站連結標記</strong>：付費或贊助內容用 <code>rel="sponsored"</code>；UGC 用 <code>rel="ugc"</code>；其他需要時可用
+            <code>nofollow</code>（現作為「提示」使用）。 (<a
+              href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">出站連結標記</a>)
+          </li>
+          <li><strong>避免違規手法</strong>：連結方案、隱藏關鍵字、橋頁、刮站等都屬垃圾策略，可能被降權或移除。 (<a
+              href="https://developers.google.com/search/docs/essentials/spam-policies?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Spam Policies</a>)</li>
+        </ul>
+
+        <h2 id="section-4">4. 入門步驟</h2>
+
+        <h3>4.1 關鍵字研究</h3>
+        <p><strong>目標</strong>：找出「有量、有意圖、你能打的贏」的詞。</p>
+        <ol>
+          <li><strong>蒐集詞庫</strong>：從產品/服務 → 客戶常問 → 競品標題 → 搜尋建議/相關搜尋 → Google Trends。</li>
+          <li><strong>判斷意圖</strong>：打開 SERP 看前 10 名類型（內容/分類頁/品牌頁），你的頁型要對齊。</li>
+          <li><strong>分群與層級</strong>：將近義詞合併、一頁一主題、餘詞安排為子段落或 FAQ。</li>
+          <li><strong>在地/多語</strong>：多語網站規劃 <code>hreflang</code>，避免錯送語言版本。</li>
+          <li><strong>量測與決策</strong>：用 Google Ads 關鍵字規劃工具估量搜尋量與趨勢，決定優先級。</li>
+        </ol>
+        <p class="muted">工具連結：Google Trends、關鍵字規劃工具</p>
+
+        <h3>4.2 內容撰寫與頁面優化</h3>
+        <p><strong>寫作清單</strong></p>
+        <ul>
+          <li><strong>標題（Title）</strong>：自然放入主詞 + 具體承諾（約 35–55 字元視像素）。</li>
+          <li><strong>主標/H1</strong>：對齊標題但以人話說清楚。</li>
+          <li><strong>前導段</strong>：2–4 句把讀者要的答案講白。</li>
+          <li><strong>內文結構</strong>：H2/H3 條列 + 圖例/步驟，避免巨牆文字。</li>
+          <li><strong>內部連結</strong>：指向「下一步」與「相關主題」，幫助抓取與理解。</li>
+          <li><strong>Meta Description</strong>：寫給人看的摘要，提升點擊率（非直接排名因子）。</li>
+          <li><strong>媒體替代文字（alt）</strong>：以「圖像扮演的資訊角色」來描述。</li>
+          <li><strong>FAQ/結語/CTA</strong>：幫讀者收尾、給明確行動（諮詢/試用/下載）。</li>
+        </ul>
+
+        <p>頁面加值：結構化資料（JSON-LD）可幫助爭取豐富結果資格（文章/FAQ/產品等）。</p>
+
+        <h3>4.3 技術面優化</h3>
+        <p><strong>站點可抓取/可索引檢查</strong></p>
+        <ul>
+          <li><strong>Search Console</strong>：用「URL 檢查」看索引狀態、可否抓取、行動相容性、結構化資料。</li>
+          <li><strong>Sitemap</strong>：提交並監控處理狀態；也可在 robots.txt 宣告路徑。</li>
+          <li><strong>Canonical 與重複內容</strong>：明確指定，避免參數 URL 分流權重。</li>
+        </ul>
+
+        <p><strong>速度與體驗</strong></p>
+        <ul>
+          <li>PageSpeed Insights / Lighthouse：檢查 LCP/CLS/INP，逐一修正圖片、字型、第三方程式與主執行緒阻塞。</li>
+          <li>行動優先：以響應式為首選；確保行動端內容等同、可點擊區域足夠。</li>
+          <li>HTTPS：全站加密，避免瀏覽器「不安全」警示與信任流失。</li>
+        </ul>
+
+        <h3>4.4 站外推廣 / 權威</h3>
+        <p><strong>自然權威的四條路</strong></p>
+        <ol>
+          <li><strong>可被引用的內容資產</strong>：原創研究、數據圖表、模板（最容易換到自然連結）。</li>
+          <li><strong>合作與露出</strong>：業界社群、研討會、專欄、Podcast。</li>
+          <li><strong>產品/內容社證（Social Proof）</strong>：案例研究、客戶評價、媒體報導。</li>
+          <li><strong>合規標記出站連結</strong>：贊助/廣告/UGC 分流標記，避免違規。</li>
+        </ol>
+
+        <h2 id="section-5">5. 常見錯誤與最佳實踐</h2>
+
+        <h3>5.1 常見錯誤</h3>
+        <ul>
+          <li>把 robots.txt 當「擋收錄」：它只控制抓取，不保證不被索引；敏感頁請用 <code>noindex</code> 或權限保護。</li>
+          <li>無站點地圖/站內架構鬆散：新頁沒被發現、孤兒頁過多。</li>
+          <li>參數/篩選頁泛濫：未 canonical、未封裝，導致重複內容與抓取資源浪費。</li>
+          <li>只顧字數不顧意圖：內容堆砌、答非所問，違反「以人為本」。</li>
+          <li>頁面體驗差：CLS 大幅位移、INP 遲緩、行動端可點區太小。</li>
+          <li>連結作弊/置換：參與連結方案、未標記贊助/UGC，踩垃圾政策。</li>
+          <li>國際/多語錯配：沒有 <code>hreflang</code> 導致錯送語言/地區版本。</li>
+          <li>忽略 Search Console 告警：錯失索引、結構化資料、手動處分通知。</li>
+        </ul>
+
+        <h3>5.2 最佳實踐</h3>
+        <ul>
+          <li><strong>以人為本</strong>：真問題→真解法→可執行步驟與證據。</li>
+          <li><strong>技術打底</strong>：可抓可索引、核心網頁生命力健康、HTTPS 安全。</li>
+          <li><strong>主題聚落（Topic Clusters）</strong>：一頁一主題 + 內部連結把相關內容串成網。</li>
+          <li><strong>量測與迭代</strong>：Search Console/PSI 定期檢視，依實際查詢與點擊不斷修文。</li>
+        </ul>
+
+        <p class="muted">章末延伸閱讀：<a href="https://developers.google.com/search/docs/essentials?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Search Essentials：政策與稽核重點</a></p>
+
+        <h2 id="section-6">6. 工具與資源</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>工具名稱</th>
+              <th>功能簡述</th>
+              <th>費用/類型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://search.google.com/search-console/about" target="_blank" rel="noopener">Google Search
+                  Console</a></td>
+              <td>索引覆蓋、URL 檢查、結構化資料/體驗報表與告警</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://pagespeed.web.dev/" target="_blank" rel="noopener">PageSpeed Insights</a></td>
+              <td>LCP/CLS/INP 量測與建議、實驗/真實資料對照</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://developer.chrome.com/docs/lighthouse" target="_blank"
+                  rel="noopener">Lighthouse（DevTools）</a></td>
+              <td>爬蟲可見度/效能/SEO 自動稽核</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Rich Results
+                  Test</a></td>
+              <td>檢測結構化資料，預覽可出現的豐富結果</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://trends.google.com/trends/" target="_blank" rel="noopener">Google Trends</a></td>
+              <td>熱搜趨勢洞察、比對關鍵字熱度</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.google.com/google-ads/answer/7337243?hl=zh-Hant" target="_blank"
+                  rel="noopener">關鍵字規劃工具</a></td>
+              <td>搜尋量與關聯詞、出價估算（需 Ads 帳號）</td>
+              <td>免費（需帳號）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 id="section-7">7. 案例流程</h2>
+
+        <p><strong>情境</strong>：在地咖啡店要推「手沖咖啡課程」。<br>
+          <strong>目標</strong>：3 個月內，讓「手沖咖啡課程 台北/新手/價格」等關鍵字取得穩定曝光與表單詢問。
+        </p>
+
+        <h3>里程碑清單</h3>
+        <ol>
+          <li><strong>關鍵字地圖（第 1 週）</strong>
+            <ul>
+              <li>主詞：手沖咖啡課程（台北）／延伸：新手、器材、價格、時間。</li>
+              <li>SERP 觀測：前 10 名以「課程介紹頁／心得文／部落格教學」為主，決定我們做<strong>課程著陸頁 + 3 篇知識文</strong>。</li>
+            </ul>
+          </li>
+
+          <li><strong>內容產出（第 2–4 週）</strong>
+            <ul>
+              <li>著陸頁結構：課程重點、師資、時間地點、費用、常見問題（FAQ Schema）、報名 CTA。</li>
+              <li>三篇知識文：新手手沖必備器材清單、手沖常見 7 個錯誤、不同比較實測（含圖表）。</li>
+              <li>內連策略：知識文導回著陸頁；著陸頁 FAQ 回鏈知識文詳解。</li>
+            </ul>
+          </li>
+
+          <li><strong>技術與體驗（第 3–5 週）</strong>
+            <ul>
+              <li>Lighthouse/PSI 優化圖片、字型載入、阻塞腳本，INP/LCP 合格；行動端可點區優化。</li>
+              <li>Sitemap 提交、URL 檢查確認可索引，FAQ Schema 綠燈。</li>
+            </ul>
+          </li>
+
+          <li><strong>站外與社證（第 4–8 週）</strong>
+            <ul>
+              <li>與在地美食社群合作一篇體驗文（標記 sponsored）；蒐集學員心得與 Google 評論。</li>
+            </ul>
+          </li>
+
+          <li><strong>量測與迭代（第 5–12 週）</strong>
+            <ul>
+              <li>Search Console 看查詢字詞與點擊頁，補寫「價格/時段/地點」更直白的段落與 FAQ。</li>
+            </ul>
+          </li>
+        </ol>
+
+        <p><strong>成果預期</strong>：第 6–8 週看到長尾詞曝光與點擊成長；第 10 週起主詞穩定進入前兩頁。表單詢問數隨著 FAQ 完備度、學員心得上線而提升。</p>
+        <p class="muted">章末延伸閱讀：Google《SEO 入門指南》內容策略段落</p>
+
+        <h2>結語</h2>
+        <p>
+          把 SEO 想成一條三線並行的產線：<strong>技術打底 → 內容產出 →
+            外部信任</strong>。你不需要一次把所有事做到滿分；你需要的是一個可重複的節奏：每週一個主題、每月一份稽核、每季一次大整理。當內容真正解決問題、網站載入順暢、且有他站願意引用時，搜尋引擎自然會把你推到更多人面前。從今天挑一個關鍵字，依照第
+          4 章的步驟做下去，你會在 Search Console 裡，看到曲線慢慢上揚。加油！
+        </p>
+
+        <hr>
+
+        <h3>參考 / 出處彙整</h3>
+        <ul>
+          <li><a href="https://developers.google.com/search/docs/fundamentals/how-search-works?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">How Search works — Google</a></li>
+          <li><a href="https://guidelines.raterhub.com/searchqualityevaluatorguidelines.pdf?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Search Quality Evaluator Guidelines</a></li>
+          <li><a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">SEO Starter Guide — Google</a></li>
+          <li><a href="https://pagespeed.web.dev/?utm_source=chatgpt.com" target="_blank" rel="noopener">PageSpeed
+              Insights</a></li>
+        </ul>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>

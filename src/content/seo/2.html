@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>新手必讀的 SEO 優化完整指南</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">新手必讀的 SEO 優化完整指南</h1>
+        <p class="meta">一次把基礎、流程與實作步驟弄懂，從零開始建立穩定自然流量</p>
+      </header>
+
+      <article class="content" id="article">
+        <p>
+          第一次接觸
+          SEO，最重要的是搞懂它在做什麼：<strong>把對的人帶到對的頁面</strong>。這份指南不談艱深術語，只用白話帶你走過「搜尋怎麼運作」、「要做哪些事」、「怎麼一步步上手」。照著做，你就能把網站變成會自己吸客的業務員。
+        </p>
+
+        <hr>
+
+        <h2>1. 定義與重要性</h2>
+
+        <h3>前導段</h3>
+        <p>
+          SEO 是「讓搜尋引擎更容易理解你的網站，讓需要的人更容易找到你」的一套方法。它不像廣告需要一直燒錢；只要打好基礎、持續更新內容，效果會越滾越大。
+        </p>
+
+        <h3>小節 A｜什麼是 SEO（用人話解釋）</h3>
+        <ul>
+          <li><strong>讓機器看得懂</strong>：頁面要有清楚的標題、段落、圖片替代文字，網址有邏輯，程式碼乾淨。</li>
+          <li><strong>讓人看得懂</strong>：內容直球對決讀者問題，少繞路、少官話。</li>
+          <li><strong>被更多人認同</strong>：有用的內容，別人願意引用、分享、連回來。</li>
+        </ul>
+
+        <h3>小節 B｜為什麼值得做</h3>
+        <ul>
+          <li><strong>會累積</strong>：文章寫得好，明年還在帶流量。</li>
+          <li><strong>找來「有需求的人」</strong>：搜尋的人本來就想解決問題，容易成交。</li>
+          <li><strong>幫品牌加分</strong>：被可信網站引用、評價好，越來越多人信任你。</li>
+        </ul>
+
+        <p class="muted">章末小結：把 SEO 想成長期存款，越早開始越有感。延伸閱讀：<a
+            href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide?hl=zh-tw" target="_blank"
+            rel="noopener">Google：SEO 入門指南（中文）</a></p>
+
+        <hr>
+
+        <h2>2. 原理與流程（抓取 → 索引 → 排名）</h2>
+
+        <figure class="mid">
+          <img src="https://www.yesharris.com/wp-content/uploads/2024/12/02-crawl-index-new.png" alt="流程圖 - 抓取 索引 排名">
+          <figcaption>流程圖：抓取 → 索引 → 排名（佔位）</figcaption>
+        </figure>
+
+        <figure class="mid">
+          <img
+            src="https://www.yesharris.com/wp-content/uploads/2023/03/%E6%90%9C%E5%B0%8B%E5%BC%95%E6%93%8E%E9%81%8B%E4%BD%9C%E5%8E%9F%E7%90%86.png"
+            alt="蜘蛛示意">
+          <figcaption>示意：搜尋機器人如何發現與抓取頁面（佔位）</figcaption>
+        </figure>
+
+        <h3>小節 A｜抓取：搜尋引擎怎麼「發現」你</h3>
+        <ul>
+          <li>搜尋機器人像蜘蛛一樣，沿著連結走，看到你的頁面。</li>
+          <li>你可以用 <strong>網站地圖（sitemap）</strong> 告訴它「這些頁都很重要」。</li>
+          <li>不想被抓的頁面，用規則檔或登入保護處理，不要讓機器亂逛。</li>
+        </ul>
+
+        <h3>小節 B｜索引與排名：怎麼「理解」與「排序」</h3>
+        <p>
+          機器會讀你的文字、標題、圖片說明，判斷你在講什麼。排序時會看內容是否有用、是否好讀、網站是否可靠與速度是否順。沒有「一鍵登頂」，穩穩把基礎做好，才會有穩定的曝光。
+        </p>
+
+        <p class="muted">章末小結：先讓機器找到你，再讓它看懂你，最後才有排名可以談。延伸閱讀：<a
+            href="https://www.google.com/search/howsearchworks/?hl=zh-TW" target="_blank"
+            rel="noopener">Google：搜尋如何運作</a></p>
+
+        <hr>
+
+        <h2>3. 三大面向（技術 / 內容 / 站外）</h2>
+
+        <h3>3.1 技術：讓機器能讀、能收、不中招</h3>
+        <figure class="mid">
+          <img src="https://seo.whoops.com.tw/wp-content/uploads/2025/05/technical-seo-optimization-cycle.png"
+            alt="技術要點圖">
+          <figcaption>技術要點示意（可抓取 / 可索引 / 速度 / 安全）</figcaption>
+        </figure>
+
+        <p><strong>關鍵要點</strong>：結構乾淨、行動友好、速度快、HTTPS、安全。</p>
+        <ul>
+          <li><strong>結構乾淨</strong>：一頁一主題，標題層級清楚（H1/H2/H3）。</li>
+          <li><strong>網址友善</strong>：可讀路徑，不要一串亂碼。</li>
+          <li><strong>行動裝置友好</strong>：手機看起來舒服、字不小、按鈕好點。</li>
+          <li><strong>速度順暢</strong>：圖片壓小、延遲載入，減少阻塞腳本。</li>
+          <li><strong>安全可信</strong>：全站 HTTPS、表單保護。</li>
+          <li><strong>站內路線清楚</strong>：導覽、麵包屑、內部連結，避免孤兒頁。</li>
+        </ul>
+        <p class="muted">章末小結：技術就是地基，穩了，房子才蓋得高。延伸閱讀：<a href="https://pagespeed.web.dev/" target="_blank"
+            rel="noopener">PageSpeed Insights</a></p>
+
+        <h3>3.2 內容：把讀者真正要的答案講清楚</h3>
+        <figure class="mid">
+          <img src="https://seo.whoops.com.tw/wp-content/uploads/2025/03/how-to-choose-right-keywords.png" alt="內容要點">
+          <figcaption>內容要點：意圖、結構、重點、案例、可執行、更新</figcaption>
+        </figure>
+
+        <p><strong>核心信念</strong>：為人寫，而不是為機器堆字。</p>
+        <ul>
+          <li>先懂意圖：比較 / 學習 / 購買，不同意圖寫法不同。</li>
+          <li>標題說人話：命中關鍵字即可，不要花俏。</li>
+          <li>結構好閱讀：段落短、重點清單、圖例示意。</li>
+          <li>拿得出證據：案例、步驟、檢核表、下載模板。</li>
+          <li>持續整理：過時資訊要更新，避免誤導。</li>
+          <li>善用內部連結：把主題文章串成網路狀結構。</li>
+        </ul>
+        <p class="muted">延伸閱讀：<a
+            href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content?hl=zh-tw"
+            target="_blank" rel="noopener">Google：以人為本的內容</a></p>
+
+        <h3>3.3 站外：讓別人願意替你作證</h3>
+        <figure class="mid">
+          <img src="https://seo.whoops.com.tw/wp-content/uploads/2025/03/off-site-seo-optimization.png" alt="站外連結對比">
+          <figcaption>站外連結示意：高品質 vs 低品質（佔位）</figcaption>
+        </figure>
+
+        <ul>
+          <li>有用才有人引用：原創研究、工具、圖表容易被連回。</li>
+          <li>合作要合規：受邀評測/贊助要標示清楚。</li>
+          <li>經營口碑：案例、學員心得、媒體報導能加分。</li>
+          <li>別鑽漏洞：買連結或刮站短期有效、長期風險大。</li>
+        </ul>
+        <p class="muted">章末小結：站外連結像社會信用分，靠價值慢慢累積。</p>
+
+        <hr>
+
+        <h2>4. 入門步驟（實作導引）</h2>
+
+        <h3>4.1 關鍵字研究</h3>
+        <p><strong>目的</strong>：找出你「應該寫」而且「寫了有人找」的主題。</p>
+        <ol>
+          <li>列清單：產品/服務 → 客戶常問 → 競品標題 → Google 搜尋建議。</li>
+          <li>看搜尋結果：打目標詞，觀察前幾名在寫什麼、頁型是什麼。</li>
+          <li>以頁面規劃主題：一頁對一個主題，相關小題放在同頁的段落或 FAQ。</li>
+          <li>分優先順序：先做「你最拿手＋讀者最常問」的。</li>
+          <li>保留在地語彙：地址、服務區域、營業時間，寫得接地氣。</li>
+        </ol>
+        <p class="muted">工具連結：<a href="https://trends.google.com/trends/" target="_blank" rel="noopener">Google
+            Trends</a></p>
+
+        <h3>4.2 內容撰寫與頁面優化</h3>
+        <p><strong>寫作清單</strong></p>
+        <ul>
+          <li>標題命中主題、清楚承諾讀者會得到什麼。</li>
+          <li>開頭 2–4 句把答案先講白，再展開細節。</li>
+          <li>用 H2/H3 切段，段落短、重點以清單呈現。</li>
+          <li>圖片有替代文字（描述圖在說什麼）。</li>
+          <li>有內部連結帶往下一步（相關文、產品頁、表單）。</li>
+          <li>Meta 摘要寫給人看的好處與承諾（不是堆關鍵字）。</li>
+          <li>結尾給 CTA（詢價、下載、預約、加入信件名單）。</li>
+        </ul>
+        <p class="muted">頁面加值：結構化資料（JSON-LD）可幫助爭取豐富結果資格。</p>
+
+        <h3>4.3 技術面優化</h3>
+        <ul>
+          <li>提交網站地圖；重要頁放在導覽與首頁連結範圍內。</li>
+          <li>標題層級正確、網址簡潔、重複內容要 canonical。</li>
+          <li>圖片壓縮、延遲載入；字型與第三方腳本別阻塞畫面。</li>
+          <li>手機上實測閱讀與操作。</li>
+          <li>HTTPS、清楚聯絡資訊與公司抬頭。</li>
+        </ul>
+        <p class="muted">工具連結：<a href="https://search.google.com/search-console/about" target="_blank"
+            rel="noopener">Google Search Console</a></p>
+
+        <h3>4.4 站外推廣 / 權威</h3>
+        <p><strong>實作路線</strong></p>
+        <ul>
+          <li>做值得被引用的內容資產：研究、模板、清單、工具。</li>
+          <li>在社群與同業社團分享，回覆討論，爭取自然連結。</li>
+          <li>合作內容標示清楚，避免踩政策紅線。</li>
+          <li>收集評價與案例，把好口碑搬到官網頁面。</li>
+        </ul>
+        <p class="muted">章末小結：讓好內容去結交新朋友，它會把流量帶回來。</p>
+
+        <hr>
+
+        <h2>5. 常見錯誤與最佳實踐</h2>
+
+        <h3>5.1 常見錯誤</h3>
+        <ul>
+          <li>只堆字數，不解決問題。</li>
+          <li>一頁塞很多主題，讀者與機器都看不懂。</li>
+          <li>內部連結亂射，或乾脆沒有。</li>
+          <li>圖片大到拖垮讀取，手機看起來卡卡的。</li>
+          <li>亂改網址又不做轉址，舊流量全流失。</li>
+          <li>買連結或換連結，短期有效、長期風險大。</li>
+          <li>不看 Search Console 告警，錯過修正機會。</li>
+          <li>放著不管不更新，資訊過期、內容失真。</li>
+        </ul>
+
+        <h3>5.2 最佳實踐</h3>
+        <ul>
+          <li>以人為本：每篇都回答一個清楚問題。</li>
+          <li>有邏輯：站內結構像樹，主題清楚、頁面互相支援。</li>
+          <li>穩紮穩打：先修技術瓶頸，再擴內容，再拓展站外。</li>
+          <li>量測 → 調整：看查詢字詞、看點擊頁，補寫大家真的在找的段落。</li>
+        </ul>
+
+        <hr>
+
+        <h2>6. 工具與資源</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>工具名稱</th>
+              <th>功能簡述</th>
+              <th>費用/類型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://search.google.com/search-console/about" target="_blank" rel="noopener">Google Search
+                  Console</a></td>
+              <td>看索引狀態、關鍵字表現、技術告警</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://pagespeed.web.dev/" target="_blank" rel="noopener">PageSpeed Insights</a></td>
+              <td>測速度與體驗，給修正建議</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://developer.chrome.com/docs/lighthouse" target="_blank"
+                  rel="noopener">Lighthouse（Chrome DevTools）</a></td>
+              <td>一鍵做效能/可用性/SEO 檢查</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Rich Results
+                  Test</a></td>
+              <td>測結構化資料是否正確</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://trends.google.com/trends/" target="_blank" rel="noopener">Google Trends</a></td>
+              <td>看熱門搜尋與季節變化</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://ads.google.com/home/tools/keyword-planner/" target="_blank"
+                  rel="noopener">關鍵字規劃工具</a></td>
+              <td>探索關鍵字與相關字</td>
+              <td>免費（需 Ads 帳號）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr>
+
+        <h2>7. 案例流程（一步步演練）</h2>
+
+        <p><strong>情境</strong>：你開了一家在地瑜伽教室，希望讓「新手瑜伽課」被更多人看到。</p>
+
+        <h3>里程碑清單</h3>
+        <ol>
+          <li>
+            <strong>定主題與頁型</strong>：做一個「新手瑜伽課」著陸頁，內容包含課程重點、師資、時段、費用、常見問題、報名按鈕。
+          </li>
+          <li>
+            <strong>查關鍵詞</strong>：從顧客常問出發（價格？時段？適合零基礎嗎？），把這些字寫進標題與段落。
+          </li>
+          <li>
+            <strong>寫 2–3 篇支援文章</strong>：如「第一次上瑜伽課帶什麼」、「伸展前後注意事項」，並在文末導回著陸頁。
+          </li>
+          <li>
+            <strong>技術檢查</strong>：圖片壓小、手機版排版、表單好填、網站地圖提交。
+          </li>
+          <li>
+            <strong>站外曝光</strong>：在在地社團發介紹文、邀部落客體驗（註明合作），收集學員心得回放到頁面。
+          </li>
+          <li>
+            <strong>量測微調</strong>：從 Search Console 看讀者實際搜尋的字，補上大家真的想知道的段落與 FAQ。
+          </li>
+        </ol>
+
+        <p class="muted">章末小結：一條主軸頁面 + 幾篇支援文 + 基礎技術 + 口碑曝光，就能形成穩定自然流量循環。</p>
+
+        <hr>
+
+        <h2>結語</h2>
+        <p>
+          SEO
+          不是一場短跑，而是一段步伐穩定的路。你不必一次做到完美；只要每週完成一小步：一篇清楚的內容、一個速度上的改良、一段有價值的內部連結。當讀者真的被幫到、網站用起來舒服、別人願意引用你，搜尋引擎就會把你排到更多人面前。從現在挑一個主題開始，照第
+          4 章的步驟走，你會看到詢問與訂單慢慢上來。
+        </p>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>

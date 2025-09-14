@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Core Web Vitals 優化指南：LCP、CLS、INP 全面提升</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">Core Web Vitals 優化指南：LCP、CLS、INP 全面提升</h1>
+        <p class="meta">掌握關鍵效能瓶頸與實作細節，改善載入速度、互動延遲與版面位移</p>
+      </header>
+
+      <article class="content" id="article">
+        <p><em>摘要：掌握關鍵效能瓶頸與實作細節，改善載入速度、互動延遲與版面位移，提升整體體驗與排名機會。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          想讓網頁「打開快、點了有反應、畫面不亂跳」？<strong>Core Web Vitals（CWV）</strong>就是 Google
+          用來衡量這三件事的指標組合：<strong>LCP</strong>（最大內容出現時間）、<strong>CLS</strong>（版面位移）、<strong>INP</strong>（互動到下一次繪製）。通過這三關，使用者更舒服，搜尋表現也較有機會穩定。(<a
+            href="https://developers.google.com/search/docs/appearance/core-web-vitals?hl=zh-tw&utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google for Developers</a>)
+        </p>
+
+        <hr>
+
+        <h2>1. 定義與為何重要</h2>
+
+        <h3>1.1 三個指標，一句話抓重點</h3>
+        <ul>
+          <li><strong>LCP</strong>：主要內容「看得到」要花多久。(<a href="https://web.dev/articles/lcp?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">web.dev - LCP</a>)</li>
+          <li><strong>CLS</strong>：元素亂移位的程度（無單位分數）。(<a
+              href="https://web.dev/articles/optimize-cls?utm_source=chatgpt.com" target="_blank" rel="noopener">web.dev
+              - CLS</a>)</li>
+          <li><strong>INP</strong>：使用者點擊、輸入後，畫面多久有回饋。(<a href="https://web.dev/articles/inp?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">web.dev - INP</a>)</li>
+        </ul>
+
+        <h3>1.2 與搜尋的關係</h3>
+        <p>
+          Google 建議站長把 CWV 維持在良好範圍；Search Console 會用真實使用者資料（CrUX）出報表，幫你找出問題頁。(<a
+            href="https://support.google.com/webmasters/answer/9205520?hl=en&utm_source=chatgpt.com" target="_blank"
+            rel="noopener">Core Web Vitals 報表</a>)
+        </p>
+
+        <h3>1.3 一個關鍵變動</h3>
+        <p>
+          <strong>INP 已在 2024/3 取代 FID</strong> 成為 Core Web Vitals 的互動性指標；Search Console 與相關工具已陸續更新。(<a
+            href="https://developers.google.com/search/blog/2023/05/introducing-inp?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google: Introducing INP</a>)
+        </p>
+
+        <p class="muted">本段重點：三指標對應三種體驗；通過門檻有助於整體表現，且 INP 已成為互動性衡量標準。</p>
+
+        <hr>
+
+        <h2>2. 原理與流程（載入 → 互動 → 穩定）</h2>
+
+        <figure class="mid">
+          <img src="https://via.placeholder.com/800x420?text=LCP+%7C+INP+%7C+CLS+%E6%8F%8F%E8%AA%AA"
+            alt="三指標總覽圖（LCP / INP / CLS）">
+          <figcaption>圖示：LCP / INP / CLS 的概念示意（佔位）</figcaption>
+        </figure>
+
+        <figure class="mid">
+          <img
+            src="https://via.placeholder.com/800x420?text=%E9%A0%81%E9%9D%A2%E8%BC%89%E5%85%A5+%E2%86%92+%E9%A6%96%E5%B1%8F%E7%95%AB%E9%9D%A2+%E2%86%92+%E5%8F%AF%E4%BA%92%E5%8A%A8+%E2%86%92+%E7%95%8C%E9%9D%A2%E7%A8%B3%E5%AE%9A"
+            alt="流程圖：頁面載入→互動→穩定">
+          <figcaption>流程圖：頁面載入→首屏渲染→可互動→畫面穩定（佔位）</figcaption>
+        </figure>
+
+        <h3>2.1 標準值（75 百分位，分行動/桌機）</h3>
+        <ul>
+          <li><strong>LCP ≤ 2.5s</strong> 為佳；4.0s 以上為差。(<a
+              href="https://web.dev/articles/optimize-lcp?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Optimize LCP</a>)</li>
+          <li><strong>INP ≤ 200ms</strong> 為佳；>500ms 為差。(<a href="https://web.dev/articles/inp?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">INP 指標說明</a>)</li>
+          <li><strong>CLS ≤ 0.1</strong> 為佳；>0.25 為差。(<a
+              href="https://web.dev/articles/optimize-cls?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Optimize CLS</a>)</li>
+        </ul>
+
+        <h3>2.2 為何工具數字會不一樣？</h3>
+        <p>
+          PageSpeed Insights（PSI）會同時呈現「實際資料（CrUX）」與「實驗室量測（Lighthouse）」。情境不同、測法不同，數字也會不同——所以要同時看兩者，並以 75 百分位場景為優先判斷依據。(<a
+            href="https://developers.google.com/speed/docs/insights/v5/about?utm_source=chatgpt.com" target="_blank"
+            rel="noopener">About PageSpeed Insights</a>)
+        </p>
+
+        <p class="muted">本段重點：以 75 百分位為門檻；理解場景 vs. 實驗室差異，才能找到真問題。</p>
+
+        <hr>
+
+        <h2>3. 三大面向：量測 / 前端實作 / 伺服器與資源</h2>
+
+        <h3>3.1 量測與診斷（先找症結）</h3>
+        <ul>
+          <li><strong>Search Console</strong>：看整站/分群問題與受影響頁面。</li>
+          <li><strong>PageSpeed Insights</strong>：單頁場景 + 實驗室分析。</li>
+          <li><strong>DevTools / Lighthouse</strong>：拆解阻塞資源、字型、圖片與 JS 長任務。</li>
+        </ul>
+        <p class="muted">先量後修，優先處理影響最多人的瓶頸。</p>
+
+        <h3>3.2 前端實作（使用者看得到的部分）</h3>
+        <ul>
+          <li><strong>LCP</strong>：確認首屏最大元素（通常是主圖或大標）並優化其載入：預載、壓圖、避免巨型背景圖。</li>
+          <li><strong>CLS</strong>：為所有媒體/廣告保留尺寸；使用容器比例佔位；處理字型 FOUT/FOIT。</li>
+          <li><strong>INP</strong>：避免主執行緒長任務，將非必要 JS 延後，互動後立即給回饋（loading 或骨架）。</li>
+        </ul>
+        <p class="muted">把「首屏最大元素」「會亂動的東西」「卡主執行緒的程式」先解決。</p>
+
+        <h3>3.3 伺服器與資源（底層速度）</h3>
+        <ul>
+          <li>快取與 CDN、壓縮回應以優化 TTFB。</li>
+          <li>採用 HTTP/2 或 HTTP/3，並按需載入資源（critical CSS、code-splitting）。</li>
+          <li>圖片管線：WebP/AVIF、多尺寸輸出、自動轉換及 lazy-load 非首屏圖。</li>
+        </ul>
+        <p class="muted">上述手法目的：讓 LCP 更快、INP 更順、CLS 不亂跳。</p>
+
+        <hr>
+
+        <h2>4. 入門步驟（照流程修：LCP → CLS → INP）</h2>
+
+        <h3>4.1 先救 LCP（最大內容出現時間）</h3>
+        <p><strong>清單</strong></p>
+        <ul>
+          <li>找出首屏最大的元素（通常主圖或主標）並優先優化。</li>
+          <li>圖片：使用 WebP/AVIF、輸出對應尺寸、移除阻塞樣式。</li>
+          <li>樣式與字型：將關鍵 CSS 內嵌；使用字型顯示策略避免首屏空白。</li>
+          <li>JS：把非必要腳本設為 <code>defer</code> 或延後載入。</li>
+        </ul>
+        <p class="muted">參考：web.dev LCP 與優化指南。</p>
+
+        <h3>4.2 再穩 CLS（版面位移）</h3>
+        <p><strong>清單</strong></p>
+        <ul>
+          <li>所有圖片/影片/iframe/廣告預先保留寬高或使用容器比例。</li>
+          <li>避免在已渲染內容上方插入新元素（例如動態訂閱條、跑馬燈）。</li>
+          <li>使用 <code>font-display</code> 與字重替換策略減少版面跳動。</li>
+        </ul>
+        <p class="muted">參考：web.dev CLS 與常見肇因。</p>
+
+        <h3>4.3 最後攻 INP（互動反應）</h3>
+        <p><strong>清單</strong></p>
+        <ul>
+          <li>拆分長任務（>50ms），把大工作拆成小塊。</li>
+          <li>事件處理器保持精簡，將重計算交給 Web Worker。</li>
+          <li>第三方 SDK/廣告/分析延後載入或按需載入。</li>
+        </ul>
+        <p class="muted">參考：web.dev INP 與最佳做法。</p>
+
+        <h3>4.4 持續監測與回歸</h3>
+        <ul>
+          <li>每週檢查 Search Console 的 CWV 報表；針對「需要改進/差」群組建立工單。</li>
+          <li>每次上線前跑 PSI，並在 CI 中納入 Lighthouse 檢查以避免回歸。</li>
+        </ul>
+
+        <hr>
+
+        <h2>5. 常見誤區 & 實用準則</h2>
+
+        <h3>5.1 常見誤區</h3>
+        <ul>
+          <li>只追 Lighthouse 分數，真實使用者資料（CrUX）沒改善。</li>
+          <li>圖片只壓縮但沒裁切，首屏仍載入過大檔案。</li>
+          <li>未為嵌入物保留尺寸，導致 CLS 增高。</li>
+          <li>長任務卡主主執行緒，互動延遲高卻只怪框架。</li>
+        </ul>
+
+        <h3>5.2 實用準則</h3>
+        <ul>
+          <li>先大後小：優先處理影響最多人的頁型與版位。</li>
+          <li>首屏為王：LCP/CLS 常在第一眼發生。</li>
+          <li>互動要回話：即使結果需等待，也要先給使用者狀態或骨架。</li>
+          <li>每季健檢：建立固定檢視與回歸測試節奏。</li>
+        </ul>
+
+        <hr>
+
+        <h2>6. 工具與資源（對照表）</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>工具名稱</th>
+              <th>功能簡述</th>
+              <th>費用/類型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://support.google.com/webmasters/answer/9205520?hl=en&utm_source=chatgpt.com"
+                  target="_blank" rel="noopener">Search Console：核心網頁生命力報表</a></td>
+              <td>以真實使用者資料檢視全站群組問題</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://developers.google.com/speed/docs/insights/v5/about?utm_source=chatgpt.com"
+                  target="_blank" rel="noopener">PageSpeed Insights</a></td>
+              <td>提供 CrUX（現場）與 Lighthouse（實驗室）結果</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://developers.google.com/speed/docs/insights/v5/get-started?utm_source=chatgpt.com"
+                  target="_blank" rel="noopener">Lighthouse（DevTools）</a></td>
+              <td>本地/CI 量測、建議與回歸檢查</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://web.dev/articles/lcp" target="_blank" rel="noopener">web.dev：LCP/CLS/INP 專文</a></td>
+              <td>官方指標說明與最佳實作教學</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://web.dev/blog/inp-cwv-march-12" target="_blank" rel="noopener">web.dev：INP 正式上線說明</a>
+              </td>
+              <td>INP 取代 FID 的說明與影響</td>
+              <td>免費</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="muted">章末延伸閱讀：Whoops SEO 的 CWV 中文整理可作為補充參考。</p>
+
+        <hr>
+
+        <h2>7. 案例流程（一步步演練）</h2>
+
+        <p><strong>情境：</strong>圖文型內容站的文章頁，行動端 LCP 偏慢、CLS 偶發、INP 屬中間區。</p>
+
+        <h3>里程碑</h3>
+        <ol>
+          <li><strong>盤點</strong>：Search Console 找出「差/需改進」群組 → 選最高流量的 10 篇優先修復。</li>
+          <li><strong>LCP 衝刺</strong>：主圖改 WebP，按裝置輸出對應尺寸；關鍵 CSS 內嵌；延後第三方按鈕載入。</li>
+          <li><strong>CLS 歸零</strong>：所有媒體、廣告位使用固定尺寸容器或比例佔位；避免在頁首動態插入元素。</li>
+          <li><strong>INP 瘦身</strong>：拆分重腳本、互動先回饋再執行重流程、使用 requestIdleCallback 處理非緊急任務。</li>
+          <li><strong>驗收</strong>：PSI 對照前後，並觀察一週後的 CrUX 變化，持續迭代。</li>
+        </ol>
+
+        <hr>
+
+        <h2>結語</h2>
+        <p>
+          CWV 不是一次交付的專案，而是長期維運的節拍：<strong>先量測 → 抓大石頭 → 小步快跑 →
+            固定回看</strong>。當首屏出得快、畫面不晃、互動有回應，使用者會更願意停留與深度互動，這些行為也會在搜尋系統中慢慢累積成優勢。今天就挑一個頁型，照第 4 章的清單做一次，你會很快看到體感變順、指標跟著上來。
+        </p>
+
+        <p class="muted">註：本文做法以 Google 官方文件為主，並搭配中文整理做為延伸參考。</p>
+
+        <hr>
+
+        <h3>參考 / 出處</h3>
+        <ul>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/core-web-vitals?hl=zh-tw&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Core Web Vitals — Google for Developers</a></li>
+          <li><a href="https://web.dev/articles/lcp?utm_source=chatgpt.com" target="_blank" rel="noopener">Largest
+              Contentful Paint (LCP) — web.dev</a></li>
+          <li><a href="https://web.dev/articles/optimize-cls?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Optimize Cumulative Layout Shift — web.dev</a></li>
+          <li><a href="https://web.dev/articles/inp?utm_source=chatgpt.com" target="_blank" rel="noopener">Interaction
+              to Next Paint (INP) — web.dev</a></li>
+          <li><a href="https://developers.google.com/search/blog/2023/05/introducing-inp?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Introducing INP — Google Blog</a></li>
+          <li><a href="https://support.google.com/webmasters/answer/9205520?hl=en&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Core Web Vitals report — Search Console Help</a></li>
+          <li><a href="https://seo.whoops.com.tw/what-is-core-web-vitals/?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Whoops SEO：Core Web Vitals 中文整理</a></li>
+        </ul>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>

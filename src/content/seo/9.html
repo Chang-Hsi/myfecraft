@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SEO 常見錯誤與黑帽風險：安全邊界與稽核</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">SEO 常見錯誤與黑帽風險：安全邊界與稽核</h1>
+        <p class="meta">避免關鍵字堆疊、買連結與隱藏文字等高風險手法，建立週期性 SEO 稽核流程</p>
+      </header>
+
+      <article class="content" id="article">
+        <p><em>摘要：避免關鍵字堆疊、買連結與隱藏文字等高風險手法，建立週期性 SEO 稽核流程。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          想把自然曝光做長久，第一課不是「加速排名」，而是<strong>躲開地雷</strong>。這篇用最白話的方式，把常見違規與高風險作法說清楚，告訴你「什麼不能碰、灰色地帶怎麼判斷、出事該怎麼補救」，最後附上可直接照做的稽核清單。參考資料包含
+          Google 官方政策與一篇中文整理（frankknow）。(<a
+            href="https://developers.google.com/search/docs/essentials/spam-policies?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google Spam Policies</a>)
+        </p>
+
+        <figure class="mid">
+          <img src="https://www.marketersgo.com/wp-content/uploads/2020/08/image1-1.jpg" alt="黑帽／灰帽／白帽 風險光譜（佔位）">
+          <figcaption>示意圖：黑帽／灰帽／白帽 風險光譜（佔位）</figcaption>
+        </figure>
+
+        <hr>
+
+        <h2>1) 黑帽、灰帽、白帽：一句話分清</h2>
+        <ul>
+          <li><strong>黑帽</strong>：明確違反規範，短期衝上去、長期多半翻船。常見如關鍵字堆疊、買連結、隱藏內容、偽裝（Cloaking）。(<a
+              href="https://blog.hubspot.com/marketing/black-hat-seo?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">HubSpot</a>)</li>
+          <li><strong>灰帽</strong>：踩在邊緣，表面不違規、實際目的在操控；一旦被判定意圖不正，還是會受罰。</li>
+          <li><strong>白帽</strong>：對齊官方守則，做對讀者、也讓系統看得懂。</li>
+        </ul>
+        <p class="muted">延伸閱讀（中文補充）：frankknow 對黑／白／灰帽的說明。</p>
+
+        <hr>
+
+        <h2>2) 高風險清單：這些動作最容易挨罰</h2>
+
+        <figure class="mid">
+          <img src="https://frankknow.com/wp-content/uploads/2024/12/Grey-Hat-SEO-Techniques-1024x708.jpg"
+            alt="警示清單（佔位）">
+          <figcaption>警示清單：常見高風險手法（佔位）</figcaption>
+        </figure>
+
+        <h3>A. 關鍵字堆疊</h3>
+        <p>
+          把同義詞、地名、產品詞硬塞滿頁，或把一長串關鍵字藏在頁尾、側欄。這屬於垃圾做法，易遭處分。(<a
+            href="https://developers.google.com/search/docs/essentials/spam-policies?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google Spam Policies</a>)
+        </p>
+
+        <h3>B. 買連結／交換連結</h3>
+        <p>
+          用金錢、物品或對價換來的連結如果不標記，等同操弄排名。付費、贊助、置換來的連結應使用 <code>rel="sponsored"</code>；留言或論壇的使用者連結建議
+          <code>rel="ugc"</code>。(<a
+            href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Outbound Links 指南</a>)
+        </p>
+
+        <h3>C. 隱藏文字與連結</h3>
+        <p>
+          把文字和背景同色、用極小字體、把連結塞到不可見區域，或讓機器看到、人看不到，都是典型黑帽。(<a
+            href="https://developers.google.com/search/docs/essentials/spam-policies?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google Spam Policies</a>)
+        </p>
+
+        <h3>D. 偽裝（Cloaking）與偷偷轉址</h3>
+        <p>對爬蟲與真用戶顯示不同內容，或把人導向與點擊不符的頁面。屬明確違規。</p>
+
+        <h3>E. 門頁（Doorway Pages）</h3>
+        <p>為了某些字詞大量生產「只為導流」的薄頁，再把人導去同一處，長年被視為有害。(<a
+            href="https://developers.google.com/search/blog/2015/03/an-update-on-doorway-pages?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Doorway Pages</a>)</p>
+
+        <h3>F. 「站點聲譽濫用」</h3>
+        <p>
+          把不相干的第三方內容掛到高聲量網站上，借權重衝結果頁；2024 年起被列為重點打擊項目。(<a
+            href="https://developers.google.com/search/blog/2024/03/core-update-spam-policies?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">2024 core update</a>)
+        </p>
+
+        <h3>G. 過期網域濫用、規模化產製空洞內容</h3>
+        <p>收購舊網域裝新、不相關內容或自動化拼裝低價值頁面，都屬新近明列的垃圾套路。</p>
+
+        <hr>
+
+        <h2>3) 「安全邊界」怎麼抓？三個原則</h2>
+
+        <figure class="mid">
+          <img
+            src="https://images.ctfassets.net/vx2fw5lk485m/7vgzsowxA8JEdHaUNHzYhn/0df8654be92ab740c7ebe6d0a6c94d0d/33__-_11.______SEO-1.png"
+            alt="邊界示意（佔位）">
+          <figcaption>邊界示意：內容／連結／技術 三圈交集（佔位）</figcaption>
+        </figure>
+
+        <ol>
+          <li><strong>對價連結要標記</strong>：贊助合作用 <code>sponsored</code>；UGC 用 <code>ugc</code>；其他不背書的外部連結可考慮
+            <code>nofollow</code>。
+          </li>
+          <li><strong>頁面要對人說真話</strong>：你頁面上寫得到，標記也才寫得到；不要標記畫面中不存在的資訊。</li>
+          <li><strong>避免「為了搜尋而生」</strong>：若頁面無法獨立提供價值，只是為導流或占位，風險高。2024–2025 的核心更新針對低價值內容下手。</li>
+        </ol>
+
+        <hr>
+
+        <h2>4) 發生了怎麼辦？手動處分處理流程</h2>
+
+        <figure class="mid">
+          <img src="https://via.placeholder.com/800x420?text=%E8%99%95%E7%90%86%E6%B5%81%E7%A8%8B" alt="處理流程示意（佔位）">
+          <figcaption>偵測 → 盤點 → 修正 → 申訴（佔位）</figcaption>
+        </figure>
+
+        <ol>
+          <li>到 Search Console 查看「手動處分」報表，確認違規類型。(<a
+              href="https://support.google.com/webmasters/answer/9044175?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Manual actions report</a>)</li>
+          <li>全面盤點：抓出問題頁與外部連結來源；對買來/置換連結請求移除或加上 <code>sponsored</code>/<code>nofollow</code>。</li>
+          <li>修復與證據：移除隱藏元素、刪除門頁、改正轉址；整理操作紀錄與截圖作為證據。</li>
+          <li>提出複審：在報表中送出修正說明與證據，並持續觀察索引與流量回溫。</li>
+        </ol>
+
+        <hr>
+
+        <h2>5) 週期性 SEO 稽核：一份能落地的 SOP</h2>
+
+        <figure class="mid">
+          <img
+            src="https://www.leononline.com.tw/leon2019/wp-content/uploads/2022/10/%E9%87%8C%E6%8F%9A%E7%B6%B2%E7%AB%99%E7%B4%A0%E6%9D%90-1.png"
+            alt="稽核看板（佔位）">
+          <figcaption>稽核看板：月檢 vs 季檢（佔位）</figcaption>
+        </figure>
+
+        <h3>月檢（每 4 週一次）</h3>
+        <ul>
+          <li><strong>內容側</strong>：抽查新文是否有「為搜尋而寫」的跡象（空話多、重複多、沒有案例或證據）。</li>
+          <li><strong>連結側</strong>：回看近月合作文與置入，全部補標 <code>sponsored/ugc</code>；記錄異常外鏈來源。</li>
+          <li><strong>技術側</strong>：掃描是否有無意義頁面大量產生（篩選頁、組合頁），避免演變成門頁。</li>
+        </ul>
+
+        <h3>季檢（每 3 個月）</h3>
+        <ul>
+          <li><strong>政策對齊</strong>：追蹤 Google 最新政策與更新重點（如 2024 的站點聲譽濫用等）。</li>
+          <li><strong>樣本稽核</strong>：隨機抽 50–100 個 URL，檢查標題是否誇張、段落是否實證不足、是否有重複或薄弱頁。</li>
+          <li><strong>風險回顧</strong>：檢討上季合作/外聯策略是否踩邊（例如讓第三方內容上主站專區）。</li>
+        </ul>
+
+        <hr>
+
+        <h2>6) 案例速寫（匿名化經驗）</h2>
+        <p><strong>情境：</strong>內容站開放「品牌專區」給外部寫手，幾週內以促銷文塞滿。</p>
+        <p><strong>結果：</strong>Search Console 收到「站點聲譽濫用」手動處分。</p>
+        <p><strong>修復：</strong>下架不相干頁、合約改為「自家編輯製作」、新增編審流程，並在對外合作頁明訂規範與連結標示。</p>
+
+        <hr>
+
+        <h2>7) 自我檢查清單（可直接複製使用）</h2>
+        <ul>
+          <li>[ ] 最近 90 天是否有任何付費或贊助內容未加 <code>rel="sponsored"</code>？</li>
+          <li>[ ] 有無頁面使用隱藏字、極小字、或對爬蟲與人顯示不同內容？（立刻移除）</li>
+          <li>[ ] 是否存在為單一詞彙大量複製拼湊的薄頁或門頁？（合併／刪除）</li>
+          <li>[ ] 是否讓第三方在你的主域名下發布與站點主題無關的文章？（下線或改到分離域名）</li>
+          <li>[ ] 外部連結策略是否以「換」、「買」為主？（改用可被引用的內容資產與合作）</li>
+          <li>[ ] Search Console 的「手動處分」與「安全性」分頁是否為零告警？（每月查看）</li>
+        </ul>
+
+        <hr>
+
+        <h2>8) 延伸閱讀（官方為主、中文補充為輔）</h2>
+        <ul>
+          <li><a href="https://developers.google.com/search/docs/essentials/spam-policies?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google：《垃圾內容政策總覽》</a></li>
+          <li><a
+              href="https://developers.google.com/search/blog/2024/03/core-update-spam-policies?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google：《2024/3 更新與新垃圾政策》</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google：《出站連結標記》</a></li>
+          <li><a href="https://frankknow.com/black-hat-seo/?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">frankknow：黑帽 SEO 中文說明</a></li>
+        </ul>
+
+        <hr>
+
+        <h2>結語</h2>
+        <p>
+          與其追捷徑，不如建立<strong>風險護城河</strong>：合作連結透明標示、頁面以人為本、拒絕寄生內容、定期稽核並留痕。當你把安全邊界踩穩、流程跑順，搜尋系統自然會給出更穩定的回報；就算哪天出現告警，也能用清楚的證據快速復原。
+        </p>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>

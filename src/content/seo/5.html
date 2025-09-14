@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>E-E-A-T 實作手冊：經驗、專家性與信任度如何展現</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">E-E-A-T 實作手冊：經驗、專家性與信任度如何展現</h1>
+        <p class="meta">從作者頁、案例研究到參考資料與評價，系統化強化網站的專業與可信度訊號</p>
+      </header>
+
+      <article class="content" id="article">
+        <p><em>摘要：從作者頁、案例研究到參考資料與評價，系統化強化網站的專業與可信度訊號。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          搜尋結果想要穩定表現，不能只靠堆字或美編。Google
+          在評估內容價值時，會觀察四個面向：<strong>經驗（Experience）</strong>、<strong>專家性（Expertise）</strong>、<strong>權威（Authoritativeness）</strong>、<strong>信任度（Trustworthiness）</strong>——合稱
+          <strong>E-E-A-T</strong>。本手冊用白話把「該做什麼」拆成清單與範例，照著補強，你的內容在使用者與搜尋系統眼中都更可靠。<a
+            href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">（Google for Developers）</a>
+        </p>
+
+        <blockquote>
+          參考脈絡：文中做法參考 Whoops SEO 的整理，並以 Google 官方文件為主體依據。<br>
+          <a href="https://seo.whoops.com.tw/what-is-eeat/" target="_blank" rel="noopener">Whoops SEO：什麼是 E-E-A-T？</a>
+        </blockquote>
+
+        <hr>
+
+        <h2>一、先搞清楚：E-E-A-T 是判斷內容好壞的準則，不是「一條演算法」</h2>
+        <ul>
+          <li>E-E-A-T 來自 <strong>品質評估指南</strong>，用來協助評估「頁面是否可靠、是否對人有幫助」，評估結果不直接決定名次，但會影響搜尋系統的改進方向。(<a
+              href="https://services.google.com/fh/files/misc/hsw-sqrg.pdf?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Search Quality Rater Guidelines</a>)</li>
+          <li>2022 年 Google 把原本的 E-A-T 加上「經驗」維度；2024 年核心更新更強調移除無價值內容、凸顯對人有幫助的資訊。(<a
+              href="https://developers.google.com/search/blog/2022/12/google-raters-guidelines-e-e-a-t?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google 更新說明</a>)</li>
+        </ul>
+        <p class="muted">一句話總結：與其追「秘招」，不如把「可信訊號」做紮實。</p>
+
+        <hr>
+
+        <h2>二、四個面向要怎麼落地？</h2>
+
+        <h3>2.1 經驗（Experience）：你真的「做過」嗎？</h3>
+        <p>要做的事：</p>
+        <ul>
+          <li>在文章中放入<strong>第一手材料</strong>：親自拍的圖、實測過程、設定參數、踩雷紀錄、前後對照。</li>
+          <li>產品/服務頁加入<strong>實際使用情境</strong>：誰在什麼場景用過、遇到什麼問題、怎麼解。</li>
+          <li>內容下方補一段「<strong>本文建立方式與限制</strong>」：資料來源、未涵蓋範圍、更新時間。</li>
+        </ul>
+        <p>快速檢核：</p>
+        <ul>
+          <li>文章是否能看見作者/團隊真的動手做過的痕跡？</li>
+          <li>圖片與敘述能對得上步驟或數據？</li>
+        </ul>
+        <p class="muted">為何要這樣做：Google 會找尋能展現經驗、專家性、權威與可信度的內容訊號。</p>
+
+        <h3>2.2 專家性（Expertise）：你憑什麼講這件事？</h3>
+        <p>要做的事：</p>
+        <ul>
+          <li><strong>作者頁</strong>：放學經歷、資格、實務年資、演講/論文/作品連結；對 YMYL（健康、金流、法律）主題尤其重要。</li>
+          <li><strong>審稿機制</strong>：YMYL 內容由具資格的人覆核，文末標註「審稿者、日期」。</li>
+          <li>把艱澀事情白話化：用圖表或清單呈現。</li>
+        </ul>
+        <p>快速檢核：</p>
+        <ul>
+          <li>本文作者是否一眼看出背景？</li>
+          <li>YMYL 文章是否有審稿資訊與時間戳？</li>
+        </ul>
+
+        <h3>2.3 權威（Authoritativeness）：外界願不願意引用你？</h3>
+        <p>要做的事：</p>
+        <ul>
+          <li>建立<strong>案例研究與媒體報導</strong>頁，集中展示被引用／合作紀錄。</li>
+          <li>公開講座、白皮書、開源專案、產業調查作為對外貢獻項目。</li>
+          <li>重要論述一律標來源：學術、官方、原始數據優先。</li>
+        </ul>
+        <p>快速檢核：</p>
+        <ul>
+          <li>網站是否有「被外部提到」的集中頁？</li>
+          <li>重要主張是否附上可靠出處？</li>
+        </ul>
+
+        <h3>2.4 信任度（Trustworthiness）：資訊正確、過程透明、網站安全</h3>
+        <p>要做的事：</p>
+        <ul>
+          <li><strong>資訊透明</strong>：聯絡方式、公司抬頭、隱私與退換條款清楚可見。</li>
+          <li><strong>安全</strong>：全站 HTTPS、表單與付款頁面特別留意。</li>
+          <li><strong>引用規範</strong>：付費/贊助/UGC 連結用適當 rel（sponsored、ugc、nofollow）。</li>
+          <li><strong>錯誤修正</strong>：內容更新紀錄與勘誤區，讓讀者看得到維護痕跡。</li>
+        </ul>
+        <p>快速檢核：</p>
+        <ul>
+          <li>重要頁是否含聯絡資訊與公司資訊？</li>
+          <li>連結屬性是否依情境正確標記？</li>
+        </ul>
+
+        <hr>
+
+        <h2>三、頁面級實作清單（可直接套用）</h2>
+
+        <h3>A. 作者與出處</h3>
+        <ul>
+          <li>文章首尾顯示作者、頭像、職稱與專長連結；YMYL 類型加「審稿者」。</li>
+          <li>段落中的關鍵陳述附<strong>原始來源</strong>（法規、期刊、官方文件、原始數據）。</li>
+        </ul>
+
+        <h3>B. 內容結構</h3>
+        <ul>
+          <li>開頭直接說重點，使用小標與清單拆解；關鍵圖表放在相關段落旁。</li>
+          <li>每篇文都有「可行步驟」、「常見問題」、「限制與風險」。</li>
+        </ul>
+
+        <h3>C. 連結與標示</h3>
+        <ul>
+          <li>參考資料、引用研究、合作文章明確標註；贊助或置入使用 <code>rel="sponsored"</code>，UGC 加 <code>rel="ugc"</code>。</li>
+        </ul>
+
+        <h3>D. 體驗與安全</h3>
+        <ul>
+          <li>HTTPS、清楚頁面層級、容易找到的聯絡/客服；速度問題交給 PSI/Lighthouse 檢測並修正。</li>
+        </ul>
+
+        <hr>
+
+        <h2>四、站點級治理（SOP）</h2>
+
+        <h3>4.1 內容與證據的「原始檔」</h3>
+        <ul>
+          <li>建立<strong>證據庫</strong>：照片原檔、測試數據、採訪錄音、授權截圖，集中歸檔以便日後補充。</li>
+          <li>所有圖表註明來源與日期，避免過時資訊造成誤導。</li>
+        </ul>
+
+        <h3>4.2 編輯流程</h3>
+        <ul>
+          <li>送審路徑：作者撰稿 → 編輯查核 →（必要時）專業審稿 → 上線。</li>
+          <li>每篇文都有更新紀錄與勘誤窗口，讓讀者與搜尋系統看得到維護痕跡。</li>
+        </ul>
+
+        <h3>4.3 連結政策</h3>
+        <ul>
+          <li>廣告/置入/贊助：<code>rel="sponsored"</code></li>
+          <li>使用者產生內容：<code>rel="ugc"</code>；不確定可信度時可加 <code>nofollow</code>。</li>
+        </ul>
+
+        <hr>
+
+        <h2>五、AI 與內容生產：怎麼用才不踩雷</h2>
+        <ul>
+          <li>Google 的立場是「看內容品質，不看誰寫的」，但前提是能展現可靠度與對人有幫助。若採用 AI，請加入人工作為：驗證、補經驗、註明限制與來源。</li>
+          <li>2024/3 的核心更新聚焦在降低無用與濫製內容的能見度；別用自動化去量產空洞頁面。</li>
+        </ul>
+
+        <hr>
+
+        <h2>六、YMYL 類主題的加強版做法</h2>
+        <ul>
+          <li>更嚴謹的出處（政府機關、學術期刊、醫療指南）。</li>
+          <li>明確披露利益關係與責任聲明。</li>
+          <li>專業審稿必備，並標示審稿人資格與時間。</li>
+        </ul>
+
+        <hr>
+
+        <h2>七、量測與維運：怎麼知道 E-E-A-T 做得好不好？</h2>
+        <ul>
+          <li>內容層面：看文章帶來的查詢詞、點擊頁、回訪比、互動品質（使用 Search Console 與站內數據）。</li>
+          <li>站外層面：媒體/社群提及、自然引用品質與相關度（重質不重量）。</li>
+          <li>維護節奏：每季做一次「更新與勘誤」盤點；對高風險（YMYL）頁面提高頻率。</li>
+        </ul>
+
+        <hr>
+
+        <h2>八、實作範本（可複製改寫）</h2>
+
+        <h3>〈文章頁範本〉</h3>
+        <ol>
+          <li>標題：清楚點出主題＋讀者能得到的結果</li>
+          <li>作者區：作者簡介、專長、外部頁連結（YMYL 加審稿者）</li>
+          <li>前導段：3–4 句交代本篇能解什麼問題</li>
+          <li>內容骨架：H2/H3 條列、步驟/清單、過程照片或數據</li>
+          <li>參考資料：列出原始來源（官方/學術/原始數據）</li>
+          <li>更新紀錄：最後更新日期、變動重點</li>
+          <li>行動區：聯絡、試用、預約或下載</li>
+        </ol>
+
+        <h3>〈作者頁範本〉</h3>
+        <ul>
+          <li>頭像、姓名、職稱</li>
+          <li>專長與年資、重要資格/證照（若有）</li>
+          <li>曾發表之內容、演講/研究/專案</li>
+          <li>聯絡方式、個人網站/社群連結</li>
+        </ul>
+
+        <h3>〈引用與連結標示〉</h3>
+        <ul>
+          <li>贊助/置入：<code>rel="sponsored"</code></li>
+          <li>UGC：<code>rel="ugc"</code></li>
+          <li>不信任或不背書：可加 <code>nofollow</code>（多屬性並列亦可）。</li>
+        </ul>
+
+        <hr>
+
+        <h2>參考與延伸</h2>
+        <ul>
+          <li><a
+              href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Creating helpful, reliable, people-first content — Google</a></li>
+          <li><a href="https://services.google.com/fh/files/misc/hsw-sqrg.pdf?utm_source=chatgpt.com" target="_blank"
+              rel="noop

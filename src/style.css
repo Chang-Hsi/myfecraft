@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* 啟用 tailwindcss-animate */
+@plugin "tailwindcss-animate";
+
+/* 定義品牌色（之後可用 bg-brandPrimary / text-brandPrimary 等） */
+@theme {
+  --color-brandPrimary: #002554;
+}
+
+/* 建議：支援偏好降低動效的使用者（可留可不留） */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

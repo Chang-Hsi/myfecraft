@@ -1,0 +1,429 @@
+```html
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>On-Page SEO 應做清單：Title、H 標、內文與內部連結</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">On-Page SEO 應做清單：Title、H 標、內文與內部連結</h1>
+        <p class="meta">逐項檢查頁面元素與文字結構，讓每一頁都能準確對應搜尋者需求並提升點擊率</p>
+      </header>
+
+      <article class="content" id="article">
+
+        <p><em>摘要：逐項檢查頁面元素與文字結構，讓每一頁都能準確對應搜尋者需求並提升點擊率。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          要讓單一頁面「更好被點進來、也更好被看懂」，你只需要兩件事：<strong>說清楚</strong>與<strong>排整齊</strong>。這篇把頁面上會影響表現的元素拆開盤點，照著做、逐項勾，就能把內容打磨到位。
+        </p>
+
+        <hr>
+
+        <h2>1. 先釐清：這一頁只負責一件事</h2>
+        <ul>
+          <li>一頁一主題，不貪心。</li>
+          <li>想像讀者的問題是一句話：本頁要直接給答覆，剩下再引導到其他頁。</li>
+        </ul>
+        <p class="muted"><strong>小結：</strong>聚焦，其他都好辦。</p>
+
+        <hr>
+
+        <h2>2. 快速流程（從外到內）</h2>
+        <ol>
+          <li><strong>鎖定關鍵意圖</strong> → 讀者想知道什麼？</li>
+          <li><strong>網頁標題（Title）與網址路徑</strong> → 先把外觀做對，才有人點。</li>
+          <li><strong>主標與小標（H1/H2/H3）</strong> → 架好骨架，讀起來不費力。</li>
+          <li><strong>前導段</strong> → 開頭幾句把答案講白。</li>
+          <li><strong>段落與清單</strong> → 內容分段、要點條列。</li>
+          <li><strong>站內連結</strong> → 幫讀者安排下一步。</li>
+          <li><strong>圖片與替代文字、摘要說明</strong> → 搜尋與社群預覽都能看懂。</li>
+          <li><strong>加值元素</strong> → FAQ、表格、範例、下載等。</li>
+        </ol>
+
+        <hr>
+
+        <h2>3. 必做清單（逐項檢查）</h2>
+
+        <h3>3.1 網頁標題（Title）</h3>
+        <ul>
+          <li><strong>寫法</strong>：主題詞 + 具體承諾/解決什麼 +（選）品牌名。<br><em>範例：在家做拿坡里披薩｜麵團配方、烤箱設定與失敗排查</em></li>
+          <li><strong>避免</strong>：空話、過度誇張、只塞一串詞。</li>
+          <li><strong>提醒</strong>：搜尋結果顯示會有長度限制，語意放前面較安全。</li>
+        </ul>
+
+        <h3>3.2 網址路徑（slug）</h3>
+        <ul>
+          <li>簡短有意義：`/pizza-dough-guide` 優於 `/post?id=12345`。</li>
+          <li>使用連字號，少用中文空格與奇怪符號。</li>
+          <li>改路徑時要做 301 轉址，不讓舊連結失效。</li>
+        </ul>
+
+        <h3>3.3 主標與小標（H 標）</h3>
+        <ul>
+          <li>H1 只有一個，跟頁面主題一致。</li>
+          <li>H2/H3 分段清楚，每段只談一點。</li>
+          <li>小標像目錄：讀小標就知道整篇在說什麼。</li>
+        </ul>
+
+        <h3>3.4 前導段</h3>
+        <ul>
+          <li>2–4 句快速交代讀者能得到什麼、適合誰。</li>
+          <li>避免繞圈，直接切題。</li>
+        </ul>
+
+        <h3>3.5 內文排版</h3>
+        <ul>
+          <li>短段落：每段 2–4 行，搭配小標與清單。</li>
+          <li>用例與步驟：能示範就示範，能拆步驟就拆步驟。</li>
+          <li>重要資訊靠前：價格、條件、限制別藏太深。</li>
+        </ul>
+
+        <h3>3.6 圖片與替代文字</h3>
+        <ul>
+          <li>圖片有描述：寫出圖在說什麼，而不是塞關鍵字。</li>
+          <li>檔案別過大：壓縮與適當尺寸，避免讀取拖慢。</li>
+          <li>圖說（可選）：一句話補充背景，提升可讀性。</li>
+        </ul>
+
+        <h3>3.7 站內連結（內部連結）</h3>
+        <ul>
+          <li>向上：回到主題總頁或類別頁。</li>
+          <li>向下：延伸到細節教學或案例。</li>
+          <li>並列：同層其他相關內容。</li>
+          <li>清楚的錨文字：用「動作＋主題」，例如「看披薩烤箱設定」。</li>
+          <li>避免：整段都放連結或用「點此」當錨文字。</li>
+        </ul>
+
+        <h3>3.8 摘要說明（Meta Description）</h3>
+        <ul>
+          <li>寫給人看：一句承諾 + 一句亮點；不必堆詞。</li>
+          <li>目的：提高點擊意願，而非直接影響排列順序。</li>
+        </ul>
+
+        <h3>3.9 社群預覽</h3>
+        <ul>
+          <li>標題與說明：設定分享時的預覽文字（OG 標籤）。</li>
+          <li>代表圖：清晰、主題明確，避免裁切到重點。</li>
+        </ul>
+
+        <h3>3.10 加值元素（選做）</h3>
+        <ul>
+          <li>FAQ 區塊：把常見疑問集中回答。</li>
+          <li>下載/範本：清單、表格、檔案能提高實用度。</li>
+          <li>作者/單位資訊：誰寫的、如何聯絡，讓內容更可信。</li>
+        </ul>
+
+        <hr>
+
+        <h2>4. 常見誤區（先避坑）</h2>
+        <ul>
+          <li>一頁塞太多事：主題東拉西扯，讀者找不到重點。</li>
+          <li>H 標當粗體用：層級亂跳，機器與人都看不懂架構。</li>
+          <li>標題只剩口號：沒有具體關鍵字，搜尋者看不懂。</li>
+          <li>連結一堆卻沒方向：沒有安排路線，點著點著就迷路。</li>
+          <li>只有長文沒有版面：巨牆文字，手機直接關掉。</li>
+          <li>改網址不轉址：外部連到舊頁面全 404，白白流失。</li>
+        </ul>
+
+        <hr>
+
+        <h2>5. 範例骨架（可對照調整）</h2>
+        <p><strong>Title：</strong>義式手工披薩教學｜麵團比例、發酵時間與家庭烤箱做法</p>
+        <p><strong>H1：</strong>在家做出好吃的義式披薩</p>
+        <p><strong>前導段：</strong>這篇帶你從麵團開始，列出比例、發酵與烤箱設定，附常見失敗排查。</p>
+
+        <ul>
+          <li><strong>H2：</strong>需要準備什麼</li>
+          <li><strong>H2：</strong>麵團做法（H3：配方｜H3：揉麵｜H3：發酵）</li>
+          <li><strong>H2：</strong>烤箱設定與烘烤時間</li>
+          <li><strong>H2：</strong>常見錯誤與修正</li>
+          <li><strong>H2：</strong>延伸閱讀與工具</li>
+        </ul>
+
+        <p><strong>站內連結：</strong>導回「披薩主題索引」、導向「烤箱選購指南」。</p>
+
+        <hr>
+
+        <h2>6. 一頁完成檢核表（複製就能用）</h2>
+
+        <ul>
+          <li><label><input type="checkbox" /> 主題單一、目標讀者明確</label></li>
+          <li><label><input type="checkbox" /> Title 命中主題並有具體承諾</label></li>
+          <li><label><input type="checkbox" /> 網址簡短、語意清楚（必要時做 301）</label></li>
+          <li><label><input type="checkbox" /> H1 唯一；H2/H3 層級合理</label></li>
+          <li><label><input type="checkbox" /> 開頭 2–4 句直接給答案</label></li>
+          <li><label><input type="checkbox" /> 段落短、要點用清單或表格呈現</label></li>
+          <li><label><input type="checkbox" /> 圖片尺寸合理、替代文字可理解</label></li>
+          <li><label><input type="checkbox" /> 站內連結安排完善（向上/向下/並列）</label></li>
+          <li><label><input type="checkbox" /> 摘要說明吸引點擊</label></li>
+          <li><label><input type="checkbox" /> 社群預覽標題、說明、代表圖就緒</label></li>
+          <li><label><input type="checkbox" /> FAQ/範例/下載等加值內容（視情況加入）</label></li>
+          <li><label><input type="checkbox" /> 作者或單位資訊可辨識</label></li>
+        </ul>
+
+        <hr>
+
+        <h2>7. 收尾與維護節奏</h2>
+        <ul>
+          <li>定期回看：每隔一段時間巡檢標題、段落與連結是否仍合用。</li>
+          <li>增補內容：讀者留言或客服常見問題，直接長到頁面裡。</li>
+          <li>觀察點擊：若顯示多但點擊少，先精修標題與摘要。</li>
+        </ul>
+
+        <hr>
+
+        <blockquote>
+          <strong>速記版（一句話總結）</strong><br>
+          把一頁當成一張清楚的說明卡：標題能吸引，結構能掃讀，內容能解題，連結能帶路。照清單做，你的頁面就會越來越好用、也更容易被選中。
+        </blockquote>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>
+```

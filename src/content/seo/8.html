@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GA4 與 Search Console：量化你的 SEO 成效</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">GA4 與 Search Console：量化你的 SEO 成效</h1>
+        <p class="meta">串接 GA4 與 GSC，從查詢字詞、平均排序到轉換率，建立迭代優化的量化儀表板</p>
+      </header>
+
+      <article class="content" id="article">
+        <p><em>摘要：串接 GA4 與 GSC，從查詢字詞、平均排序到轉換率，建立迭代優化的量化儀表板。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          SEO 做得好不好，不能只憑感覺。把 <strong>GA4（Google Analytics 4）</strong> 與 <strong>Search Console（GSC）</strong>
+          串起來，你就能看見「使用者如何搜尋到你 → 進站後有沒有互動 → 是否完成關鍵行動」。這篇用白話教你把兩套數據接起來、怎麼讀、怎麼做成好用的儀表板。(<a
+            href="https://developers.google.com/search/docs/monitor-debug/google-analytics-search-console?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google for Developers</a>)
+        </p>
+
+        <figure class="mid">
+          <img src="https://www.da-vinci.com.tw/uploads/images/2c64d29011a59b8f9596e4bac0d3eb68.png"
+            alt="GSC 與 GA4 概念圖（佔位）">
+          <figcaption>左：GSC＝前台曝光與點擊；右：GA4＝站內行為與轉換（佔位）</figcaption>
+        </figure>
+
+        <hr>
+
+        <h2>1) 兩套工具在量什麼？</h2>
+        <ul>
+          <li><strong>Search Console（GSC）</strong>：看搜尋結果的 <strong>曝光、點擊、點閱率、平均排序</strong>，可依查詢字詞、頁面、地區、裝置切分。(<a
+              href="https://support.google.com/webmasters/answer/7576553?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Performance report</a>)</li>
+          <li><strong>GA4</strong>：看站內的 <strong>工作階段、參與度（engaged sessions/engagement rate）、關鍵事件（Key events）</strong>
+            與漏斗。(<a href="https://support.google.com/analytics/answer/12195621?hl=en&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">GA4 Engagement</a>)</li>
+        </ul>
+        <p class="muted">重點：GSC 解答「怎麼被找到」，GA4 解答「進站後發生什麼」。兩邊合起來，才能完整評估 SEO。</p>
+
+        <hr>
+
+        <h2>2) 串接流程（一步到位）</h2>
+        <figure class="mid">
+          <img
+            src="https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/2395403/899062_301500.jpg"
+            alt="串接流程示意（佔位）">
+          <figcaption>GA4 ↔ GSC 連結 → GA4 內建報表 → Looker Studio 儀表板（佔位）</figcaption>
+        </figure>
+
+        <ol>
+          <li>在 GA4 後台建立與 GSC 的連結（管理員權限）：Admin → Product links → Search Console links → 選擇對應的 GSC 資源並完成綁定。完成後，GA4 會出現兩份
+            GSC 報表。(<a href="https://support.google.com/analytics/answer/10737381?hl=en&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Connect Search Console to GA4</a>)</li>
+          <li>確認 GA4 內新增的兩份報表：<em>Queries: Organic Google Search</em>（查詢字詞）與 <em>Google Organic Search Traffic</em>（落地頁
+            × 搜尋流量）。</li>
+          <li>把 GA4 與 GSC 一起接到 Looker Studio：新增資料來源 → 選 GA4 與 Search Console 連接器，同一張圖表即可交叉使用。(<a
+              href="https://cloud.google.com/looker/docs/studio/connect-to-search-console?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Looker Studio 連接</a>)</li>
+        </ol>
+
+        <p class="muted">結果：你能在一處同看「字詞／排名」與「互動／轉換」。</p>
+
+        <hr>
+
+        <h2>3) 指標對齊：常見名詞用超簡單版本</h2>
+        <ul>
+          <li><strong>平均排序（Average position）</strong>：GSC 計算一段時間內曝光名次的平均值。</li>
+          <li><strong>參與工作階段（Engaged session）</strong>：停留 >10 秒、或觸發關鍵事件、或瀏覽 ≥2 頁。</li>
+          <li><strong>關鍵事件（Key events）</strong>：你定義的成功動作，如送出表單、加入購物車、購買。</li>
+        </ul>
+        <p class="muted">小提醒：不同工具的數字本來就不會一模一樣（資料來源與處理方式不同）。看趨勢與關聯，而非逐位數對帳。</p>
+
+        <hr>
+
+        <h2>4) 儀表板藍圖（你可以直接照做）</h2>
+        <figure class="mid">
+          <img
+            src="https://cloudad.tech/wp-content/uploads/2022/08/%E6%BC%8F%E6%96%97%E6%8E%A2%E7%B4%A2%E5%A0%B1%E8%A1%A8.006.jpeg"
+            alt="儀表板藍圖示意（佔位）">
+          <figcaption>上層 KPI、GSC 趨勢、GA4 漏斗、查詢×落地頁對照（佔位）</figcaption>
+        </figure>
+
+        <h3>A. KPI 卡片（整站近 28 天）</h3>
+        <ul>
+          <li>GSC：曝光、點擊、平均排序、CTR。</li>
+          <li>GA4：使用者、參與率、關鍵事件數、每百位使用者的關鍵事件。</li>
+        </ul>
+
+        <h3>B. 入口區塊（來源→頁面）</h3>
+        <p>折線／柱狀：GSC 點擊趨勢 × GA4 參與工作階段趨勢。漏斗：進站 → 觸發關鍵事件 → 成功（看 drop-off）。</p>
+
+        <h3>C. 關聯表格（最關鍵）</h3>
+        <ul>
+          <li>左表：查詢字詞 × 點擊 × 平均排序 × 該字詞的主要落地頁。</li>
+          <li>右表：落地頁 × 參與率 × 關鍵事件率（該頁在 GA4 的表現）。</li>
+        </ul>
+
+        <p class="muted">用法：找出「點得到但不轉」、「排名不錯但 CTR 低」、「進站後參與差」的頁面與字詞，逐一優化。</p>
+
+        <hr>
+
+        <h2>5) 讀數據→做決策：三種最常見的場景</h2>
+
+        <h3>場景 1｜CTR 低（排序還行、點擊卻少）</h3>
+        <p>看該詞的 SERP：標題與摘要是否說清價值？是否有重複頁互搶？改寫標題／摘要、補 FAQ/比較段，隔週再看變化。</p>
+
+        <h3>場景 2｜參與度低（點進來就走）</h3>
+        <p>GA4 看該頁的參與率、平均互動時間；檢查開頭是否直切重點、版面是否好掃。把「下一步」連結放前面（預約、諮詢、更多教學）。</p>
+
+        <h3>場景 3｜有參與、沒轉換</h3>
+        <p>檢查關鍵事件是否設定正確（例如「送出表單」是否被記到）。在表單前加入微行動（下載、試算、加入清單）當中繼目標。</p>
+
+        <hr>
+
+        <h2>6) 設定關鍵事件（舊稱轉換）：最少要有這幾個</h2>
+        <figure class="mid">
+          <img
+            src="https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/2395403/781399_456085.jpeg"
+            alt="關鍵事件清單（佔位）">
+          <figcaption>表單送出 / 致電 / 加入購物車 / 購買 / 下載（佔位）</figcaption>
+        </figure>
+        <ul>
+          <li><code>generate_lead</code>（送出表單或完成諮詢）</li>
+          <li><code>add_to_cart</code>、<code>purchase</code>（電商型）</li>
+          <li><code>click_to_call</code> / <code>view_promotion</code>（行動版或活動頁）</li>
+        </ul>
+        <p class="muted">把這些事件標記為 Key events，報表才讀得出轉換率與每百位使用者觸發數。</p>
+
+        <hr>
+
+        <h2>7) 進階：把原始資料送到 BigQuery（免費沙盒就能用）</h2>
+        <figure class="mid">
+          <img src="https://via.placeholder.com/800x220?text=BigQuery+Flow" alt="GA4 -> BigQuery -> Looker Studio（佔位）">
+          <figcaption>GA4 → BigQuery → Looker Studio（佔位）</figcaption>
+        </figure>
+        <p>GA4 可把事件資料每天匯到 BigQuery；沙盒（Sandbox）可免費試作（有額度限制）。好處：自訂歸因窗、跨站整併、長期留存，報表更自由。</p>
+
+        <hr>
+
+        <h2>8) 常見誤會 & 排解</h2>
+        <ul>
+          <li>為什麼 GA4 的「自然流量使用者」跟 GSC 的「點擊」對不起來？兩者定義與抽樣不同；GSC 是搜尋層級的點擊與曝光，GA4 是站內行為。用 Looker Studio 同窗呈現、看趨勢與關聯即可。</li>
+          <li>平均排序是否越低越好？是，但它是所有曝光的平均名次，受不同版位/功能影響（新聞盒、圖像、地圖等）。看趨勢與重要詞的分組更實際。</li>
+          <li>要看哪些 GA4 互動指標？參與率與參與工作階段是 GA4 的核心互動觀念，比舊的「跳出率」更有解釋力。</li>
+        </ul>
+
+        <hr>
+
+        <h2>9) 工具與資源（對照表）</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>工具名稱</th>
+              <th>功能簡述</th>
+              <th>費用/類型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://search.google.com/search-console/about" target="_blank" rel="noopener">Google Search
+                  Console</a></td>
+              <td>查詢字詞、曝光、點擊、平均排序</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.google.com/analytics/answer/11583528?hl=zh-Hant" target="_blank"
+                  rel="noopener">Google Analytics 4</a></td>
+              <td>站內行為、參與度、關鍵事件</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.google.com/analytics/answer/10737381?hl=zh-Hant" target="_blank"
+                  rel="noopener">GA4 × GSC 串接教學</a></td>
+              <td>連結步驟與內建報表說明</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://cloud.google.com/looker/docs/studio/connect-to-search-console" target="_blank"
+                  rel="noopener">Looker Studio（Search Console 連接器）</a></td>
+              <td>把 GSC 與 GA4 放同個儀表板</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.google.com/analytics/answer/9823238?hl=zh-Hant" target="_blank"
+                  rel="noopener">BigQuery Export（GA4）</a></td>
+              <td>GA4 事件資料匯出（沙盒可免費）</td>
+              <td>免費（有額度）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="muted">延伸閱讀（中文）：Harris 先生 GA4 教學手冊（涵蓋指標、設定與常見問題）。</p>
+
+        <hr>
+
+        <h2>10) 演練範例：從字詞到轉換的「四步法」</h2>
+        <ol>
+          <li>挑主題：在 GSC 找近 28 天點擊下降、但曝光穩定的詞，鎖定 5–10 個。</li>
+          <li>看落地頁：在 GA4 的 <em>Google Organic Search Traffic</em> 查這些詞對應的落地頁是否「參與率低」。</li>
+          <li>改頁面：把開頭答案講清楚、補內部連結與 CTA，並檢查該頁是否確實回報關鍵事件。</li>
+          <li>追結果：用 Looker Studio 做「詞 → 頁 → 參與 → 關鍵事件」的四格看板，兩週回看一次。</li>
+        </ol>
+
+        <hr>
+
+        <h2>結語</h2>
+        <p>
+          把 GA4 與 Search Console 接起來，不是為了多一份報表，而是讓每次優化都有「前因後果」可追：<strong>搜尋端（被看見） → 內容端（被看懂） →
+            行動端（被採取）</strong>。照本文的串接與儀表板藍圖落地，你就能快速定位哪裡最卡、下一步該改什麼，讓 SEO 成效從猜測變成可驗證的循環。
+        </p>
+
+        <p class="muted">註：若你喜歡中文長文學習路線，可把本文與 Harris 先生的 GA4 教學對照閱讀，建立一套固定的量測節奏。</p>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>

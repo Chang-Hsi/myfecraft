@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>結構化資料與豐富結果：Article、FAQ、Breadcrumb 標記</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">結構化資料與豐富結果：Article、FAQ、Breadcrumb 標記</h1>
+        <p class="meta">用結構化資料幫搜尋引擎讀懂頁面意圖，增加出現精選摘要與豐富結果的機會</p>
+      </header>
+
+      <article class="content" id="article">
+        <p><em>摘要：用結構化資料幫搜尋引擎讀懂頁面意圖，增加出現精選摘要與豐富結果的機會。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          同一篇內容，用對「結構化資料（Structured
+          Data）」就像在頁面上貼上小抬頭，告訴搜尋系統：這是文章、這裡是作者、這段是問題與回答、這條是導覽路徑。理解越清楚，越有機會在搜尋結果呈現<strong>更豐富的樣式（Rich
+            Results）</strong>，例如更完整的標題、縮圖、路徑等。本文聚焦三種最常用的標記：<strong>Article</strong>、<strong>FAQPage</strong>、<strong>BreadcrumbList</strong>，並給你可直接套用的
+          JSON-LD 範例與常見地雷。(<a
+            href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google for Developers</a>)
+        </p>
+
+        <figure class="mid">
+          <img
+            src="https://www.yesharris.com/wp-content/uploads/2023/05/01%E7%B5%90%E6%A7%8B%E5%8C%96%E8%B3%87%E6%96%99%E6%A8%99%E8%A8%98%E6%98%AF%E4%BB%80%E9%BA%BC%EF%BC%9F.png"
+            alt="概念示意圖：頁面內容、JSON-LD、搜尋結果樣式">
+          <figcaption>概念示意：內容 → JSON-LD → 搜尋結果樣式（佔位）</figcaption>
+        </figure>
+
+        <hr>
+
+        <h2>1. 先釐清：結構化資料與豐富結果的關係</h2>
+        <ul>
+          <li><strong>結構化資料是語意標記</strong>：用 JSON-LD、Microdata 或 RDFa 描述頁面要素（建議用 JSON-LD）。(<a
+              href="https://developers.google.com/search/docs/appearance/structured-data/sd-policies?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">General Structured Data Guidelines</a>)</li>
+          <li><strong>豐富結果是呈現方式</strong>：是否顯示由 Google 決定；就算標得正確，也<strong>不保證</strong>一定出現。(<a
+              href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Intro to Structured Data</a>)</li>
+          <li><strong>內容要能對上畫面</strong>：標記不可捏造或標示看不到的資訊，違規會被忽略或處罰。</li>
+        </ul>
+
+        <p class="muted">延伸閱讀：Structured data 基本原理與支援項目總覽。</p>
+
+        <hr>
+
+        <h2>2. Article：讓系統正確理解你的文章</h2>
+
+        <figure class="mid">
+          <img src="https://www.da-vinci.com.tw/uploads/editor/files/SEO-search-result(1).jpg" alt="Article 範例截圖（佔位）">
+          <figcaption>文章卡片示意：縮圖、標題、日期（佔位）</figcaption>
+        </figure>
+
+        <h3>什麼時候用</h3>
+        <p>
+          新聞、部落格、專題報導、教學文等適合用 <strong>Article</strong>（NewsArticle、BlogPosting 亦可）。系統能更準確抓到標題、主圖、時間與作者資訊。(<a
+            href="https://developers.google.com/search/docs/appearance/structured-data/article?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Article 指南</a>)
+        </p>
+
+        <h3>必備/常用欄位建議</h3>
+        <ul>
+          <li><code>headline</code>、<code>image</code>（至少 1200px
+            寬的代表圖）、<code>datePublished</code>、<code>dateModified</code>、<code>author</code>、<code>publisher</code>、<code>mainEntityOfPage</code>
+          </li>
+        </ul>
+
+        <h3>JSON-LD 範例（可直接改值）</h3>
+        <pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://example.com/blog/structured-data" },
+  "headline": "結構化資料與豐富結果實作指南",
+  "image": ["https://example.com/images/cover-1200.jpg"],
+  "datePublished": "2025-09-10",
+  "dateModified": "2025-09-12",
+  "author": { "@type": "Person", "name": "王小明" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Example Inc.",
+    "logo": { "@type": "ImageObject", "url": "https://example.com/logo-120x120.png" }
+  },
+  "description": "用 JSON-LD 幫搜尋引擎理解文章，提升顯示品質。"
+}</code></pre>
+
+        <!-- 實際可放入頁面的 JSON-LD（範例，可修改） -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://example.com/blog/structured-data" },
+          "headline": "結構化資料與豐富結果實作指南",
+          "image": ["https://example.com/images/cover-1200.jpg"],
+          "datePublished": "2025-09-10",
+          "dateModified": "2025-09-12",
+          "author": { "@type": "Person", "name": "王小明" },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Example Inc.",
+            "logo": { "@type": "ImageObject", "url": "https://example.com/logo-120x120.png" }
+          },
+          "description": "用 JSON-LD 幫搜尋引擎理解文章，提升顯示品質。"
+        }
+        </script>
+
+        <p class="muted">實作提示：發佈與更新時間請確實；主圖清晰且比例合理。Google News/Discover 對時間與圖片亦有注意事項。</p>
+
+        <hr>
+
+        <h2>3. FAQPage：Q&amp;A 內容的標記（顯示規則已收緊）</h2>
+
+        <figure class="mid">
+          <img
+            src="https://www.yesharris.com/wp-content/uploads/2023/05/03FAQ%E7%B5%90%E6%A7%8B%E5%8C%96%E8%B3%87%E6%96%99-2.png"
+            alt="FAQ 示意圖">
+          <figcaption>FAQ 區塊示意（佔位）</figcaption>
+        </figure>
+
+        <h3>什麼時候用</h3>
+        <p>頁面中有多組「問題＋回答」且由同一提供者撰寫（非使用者留言），適合使用 FAQPage。(<a
+            href="https://developers.google.com/search/docs/appearance/structured-data/faqpage?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">FAQPage 指南</a>)</p>
+
+        <h3>重要注意</h3>
+        <p>自 2023 年後，FAQ 豐富結果顯示範圍收緊，系統會更傾向於政府或健康等可信站點；其他網站即使標記正確也未必顯示。</p>
+
+        <h3>JSON-LD 範例</h3>
+        <pre><code>{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "什麼是結構化資料？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用標準化格式描述頁面元素，幫搜尋系統快速理解內容。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "FAQ 標記是不是一定會有加強顯示？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不一定。Google 目前多半只在政府與健康領域的權威網站顯示 FAQ 豐富結果。"
+      }
+    }
+  ]
+}</code></pre>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "什麼是結構化資料？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "用標準化格式描述頁面元素，幫搜尋系統快速理解內容。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "FAQ 標記是不是一定會有加強顯示？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "不一定。Google 目前多半只在政府與健康領域的權威網站顯示 FAQ 豐富結果。"
+              }
+            }
+          ]
+        }
+        </script>
+
+        <p class="muted">實作提示：問題與回答務必與實際可見內容一致，勿塞關鍵字或行銷語；一頁放置多組 Q&amp;A 才適合用 FAQPage。</p>
+
+        <hr>
+
+        <h2>4. BreadcrumbList：清楚的階層路徑</h2>
+
+        <figure class="mid">
+          <img
+            src="https://media.awoo.ai/live/wp-content/uploads/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2018-05-25-%E4%B8%8B%E5%8D%886.01.05.png"
+            alt="Breadcrumb 路徑示意">
+          <figcaption>導覽路徑示意：首頁 ＞ 分類 ＞ 本文（佔位）</figcaption>
+        </figure>
+
+        <h3>為何要用</h3>
+        <p>導覽路徑標記表明頁面在網站中的層級位置，有助於系統理解結構，並在某些情境中作為顯示依據。(<a
+            href="https://developers.google.com/search/docs/appearance/structured-data/breadcrumb?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Breadcrumb 指南</a>)</p>
+
+        <h3>JSON-LD 範例</h3>
+        <pre><code>{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1,
+      "name": "首頁", "item": "https://example.com/" },
+    { "@type": "ListItem", "position": 2,
+      "name": "知識庫", "item": "https://example.com/knowledge/" },
+    { "@type": "ListItem", "position": 3,
+      "name": "結構化資料實作", "item": "https://example.com/knowledge/structured-data" }
+  ]
+}</code></pre>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://example.com/" },
+            { "@type": "ListItem", "position": 2, "name": "知識庫", "item": "https://example.com/knowledge/" },
+            { "@type": "ListItem", "position": 3, "name": "結構化資料實作", "item": "https://example.com/knowledge/structured-data" }
+          ]
+        }
+        </script>
+
+        <p class="muted">實作提示：至少兩個 ListItem，每個項目需有 name 與對應 URL；避免路徑與實際導覽不一致。</p>
+
+        <hr>
+
+        <h2>5. 放到頁面前，請先做這三件事</h2>
+        <ol>
+          <li><strong>技術規範</strong>：採用 JSON-LD；不要用 robots.txt/noindex 把含標記的頁面擋掉。</li>
+          <li><strong>品質規範</strong>：標記要和實際畫面一致，不過度包裝、不誤導。</li>
+          <li><strong>測試</strong>：先用 Rich Results Test 或 Search Console 的 URL 檢查驗證語法與可見性。</li>
+        </ol>
+
+        <hr>
+
+        <h2>6. 常見地雷（避免踩）</h2>
+        <ul>
+          <li>看不到卻標上去：例如把隱藏區塊或彈窗內容拿來標；易被判定品質不佳。</li>
+          <li>FAQ 亂用：把行銷文硬切成 Q&amp;A；現在多數站點也不會得到 FAQ 富顯示。</li>
+          <li>路徑不一致：Breadcrumb 與實際導覽不符或缺最後一階 URL。</li>
+          <li>圖片太小：Article 的代表圖過小，可能不符合顯示條件（建議至少 1200px 寬）。</li>
+        </ul>
+
+        <hr>
+
+        <h2>7. 實作步驟（一步步落地）</h2>
+        <ol>
+          <li>盤點頁型：列出文章頁、FAQ 集中頁、分類頁，決定應用哪一種標記。</li>
+          <li>設計欄位：把標題、主圖、作者、時間、路徑對應到 CMS 欄位。</li>
+          <li>輸出 JSON-LD：在 &lt;head&gt; 或頁尾輸出；以伺服器端或前端渲染皆可。</li>
+          <li>驗證與上線：批次以 Rich Results Test 驗證；上線後用 Search Console 看偵測情況與告警。</li>
+        </ol>
+
+        <hr>
+
+        <h2>8. 範例組合：文章頁 + FAQ 區塊 + 導覽路徑</h2>
+        <p>
+          在一篇教學文中，你可以同時放 <strong>Article</strong>（描述整篇）、頁內的「常見問題」區塊用 <strong>FAQPage</strong>（若真的以 Q&amp;A 呈現）、頂部或麵包屑用
+          <strong>BreadcrumbList</strong>。三者互不衝突，但請確保 <strong>內容都在頁面上看得到</strong>。(<a
+            href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">相關說明</a>)
+        </p>
+
+        <hr>
+
+        <h2>9. 小工具與資源</h2>
+        <ul>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/search-gallery?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Search Gallery — 支援的結構化資料與範例</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/sd-policies?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Structured Data Policies — 技術/品質/內容規範</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/faqpage?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">FAQPage 指南（含顯示限制）</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/article?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Article 指南：必要屬性與圖片建議</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/breadcrumb?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Breadcrumb 指南：欄位要求與常見錯誤</a></li>
+        </ul>
+
+        <hr>
+
+        <h2>結語</h2>
+        <p>
+          結構化資料不是「加了就會發光」，而是把內容用標準格式說清楚。先把
+          <strong>Article</strong>、<strong>FAQPage</strong>、<strong>BreadcrumbList</strong>
+          做正確，並確保頁面真的提供這些資訊；後續再按頁型擴充（例如產品、活動、評分…）。把基本功打好，搜尋系統更容易理解你，讀者也更快找到重點。
+        </p>
+
+        <hr>
+
+        <h3>參考 / 出處</h3>
+        <ul>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Intro to How Structured Data Markup Works — Google</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/sd-policies?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">General Structured Data Guidelines — Google</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/article?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Article Schema — Google</a></li>
+          <li><a href="https://support.google.com/news/publisher-center/answer/9607104?hl=en&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google News — Article best practices</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/faqpage?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">FAQPage — Google</a></li>
+          <li><a href="https://developers.google.com/search/blog/2023/08/howto-faq-changes?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Changes to HowTo and FAQ rich results — Google Blog</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/appearance/structured-data/breadcrumb?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">BreadcrumbList — Google</a></li>
+        </ul>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>

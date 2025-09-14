@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GEO 與 SEO 的差異：地理行銷與搜尋曝光如何搭配？</title>
+
+  <style>
+    :root {
+      --max-page-width: 1200px;
+      --content-width: 740px;
+      --gutter: 12px;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --bg: #f8fafc;
+      --accent: #0ea5a3;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Helvetica Neue", Arial, system-ui, -apple-system, "Segoe UI", "PingFang TC";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* 把整體字級放大兩級（從預設 16px -> 18px） */
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    /* Shell & container：移除左右大留白，使頁面佔滿寬度 */
+    .article-shell {
+      min-height: 100vh;
+      padding: 0;
+      /* 兩側留白移除 */
+      display: flex;
+      justify-content: flex-start;
+      background: var(--bg);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 100%;
+      /* 佔滿寬度 */
+      margin: 0;
+    }
+
+    /* Header（延展到整寬，但內容內縮些許以維持閱讀舒適） */
+    .article-header {
+      width: 100%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.75rem;
+      /* 原 2.25rem -> 放大 */
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Content column：移除 central max-width，改為 100% 寬度並留小內距 */
+    .content {
+      width: 100%;
+      margin: 0;
+      padding: 0 32px 80px 32px;
+      /* 只留少量內距避免黏邊 */
+      box-sizing: border-box;
+    }
+
+    /* 段落與標題字級放大兩級（相對於原稿） */
+    .content p {
+      margin: 0 0 1.25rem;
+      font-size: 1.5rem;
+      /* 加大段落字級 */
+      line-height: 1.95;
+    }
+
+    .content h2 {
+      margin: 1.8rem 0 0.7rem;
+      font-size: 1.75rem;
+      /* 原 1.375rem -> 放大 */
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .content h3 {
+      margin: 1.3rem 0 0.6rem;
+      font-size: 1.5rem;
+      /* 原 1.05rem -> 放大 */
+      font-weight: 700;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 0 0 1.15rem 1.5rem;
+    }
+
+    .content li {
+      margin: 0.45rem 0;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    /* Figures: mid/full 皆可橫滿可視區域（但保留內距） */
+    figure {
+      margin: 1.25rem 0;
+      text-align: left;
+      padding: 0 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.5rem
+    }
+
+    /* mid-size image：現在也是依容器寬度呈現（已佔滿） */
+    figure.mid {
+      max-width: 100%;
+      margin: 0 auto 1.25rem;
+    }
+
+    /* full-width：橫跨整個視窗寬度（仍受內距 32px 控制） */
+    figure.full {
+      width: calc(100% - 64px);
+      margin-left: 32px;
+      margin-right: 32px;
+    }
+
+    /* Blockquote（放大字級以符合整體放大） */
+    blockquote {
+      margin: 1rem 0;
+      padding: 16px 20px;
+      background: rgba(17, 24, 39, 0.03);
+      border-left: 5px solid #111827;
+      color: #374151;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      line-height: 1.9;
+    }
+
+    /* Code block */
+    pre {
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 16px;
+      border-radius: 8px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.05);
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size: 0.98rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 12px;
+      text-align: left
+    }
+
+    thead th {
+      background: #f1f5f9;
+      font-weight: 700
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: underline
+    }
+
+    a:visited {
+      opacity: 0.9
+    }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .title {
+        font-size: 2rem
+      }
+
+      .content {
+        padding: 0 16px
+      }
+
+      figure.full {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px
+      }
+
+      .article-header {
+        padding: 20px 16px
+      }
+
+      .article-shell {
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="article-shell">
+    <div class="page">
+      <header class="article-header">
+        <h1 class="title">GEO 與 SEO 的差異：地理行銷與搜尋曝光如何搭配？</h1>
+        <p class="meta">GEO 著重位置與即時情境推播，SEO 聚焦搜尋意圖與長期自然流量</p>
+      </header>
+
+      <article class="content" id="article">
+        <p><em>摘要：GEO 著重位置與即時情境推播，SEO 聚焦搜尋意圖與長期自然流量。搞懂兩者分工，讓在地生意與全站流量一起成長。</em></p>
+
+        <hr>
+
+        <h2>導言</h2>
+        <p>
+          很多店家會問：「要不要做 GEO？還是把資源都放在 SEO？」其實兩者不是二選一。簡單想像：<strong>GEO 幫你在「附近、此刻」被看到；SEO
+            讓你在「搜尋、平常」被找到。</strong>這篇用淺白方式拆解兩者差異、優缺點與搭配流程，幫你做對資源分配。
+        </p>
+
+        <hr>
+
+        <h2>1. 定義與重要性：誰、在何時、用什麼方式看到你</h2>
+
+        <h3>前導段</h3>
+        <p>
+          <strong>GEO（地理行銷）</strong>：依照人所在的位置或周邊區域，推送資訊或投放廣告，像是以店為中心畫一個範圍，只要走進來就有機會看見你的訊息。(<a
+            href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com" target="_blank"
+            rel="noopener">Google 支援：Location targeting</a>)<br>
+          <strong>SEO（搜尋優化）</strong>：讓你的頁面更容易被搜尋系統理解與收進資料庫，當有人輸入相關關鍵字時，有機會在結果中露臉。(<a
+            href="https://developers.google.com/search/docs/fundamentals/how-search-works?utm_source=chatgpt.com"
+            target="_blank" rel="noopener">Google：How Search works</a>)
+        </p>
+
+        <h3>小節 A｜什麼時候用哪個？</h3>
+        <ul>
+          <li>做<strong>臨近客流</strong>（外送、到店、活動檔期）→ 先用 GEO 勾起注意。(<a
+              href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google 支援</a>)</li>
+          <li>要<strong>平日穩定流量</strong>（教學內容、服務比較、品牌建立）→ 靠 SEO 長期累積。(<a
+              href="https://developers.google.com/search/docs/fundamentals/how-search-works?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google for Developers</a>)</li>
+        </ul>
+
+        <h3>小節 B｜為什麼兩者都重要</h3>
+        <p>
+          GEO 幫你在地圖與周邊曝光；SEO 幫你攔住本來就會搜尋的人。兩者互補，避免「只有來店沒有線上查詢」或「只有文章沒有到店」。
+        </p>
+
+        <p class="muted">章末小結：GEO 解決「在哪裡遇見你」，SEO 解決「為什麼選你」。延伸閱讀：Google《搜尋如何運作》與《地點鎖定》說明。</p>
+
+        <hr>
+
+        <h2>2. 原理與流程（GEO 的觸達 → SEO 的收錄 → SEO 的排序）</h2>
+
+        <figure class="mid">
+          <img src="https://seo.whoops.com.tw/wp-content/uploads/2025/07/seo-and-geo-cycle.png"
+            alt="流程圖 - GEO 觸達 → SEO 收錄 → 排名">
+          <figcaption>流程圖：左 GEO 觸達；右 SEO 收錄→排序（佔位）</figcaption>
+        </figure>
+
+        <figure class="mid">
+          <img
+            src="https://www.ixpert.com.tw/upload/news_m/1-1__25E08Evzz0.jpghttps://www.ixpert.com.tw/upload/news_m/1-1__25E08Evzz0.jpg"
+            alt="地圖/蜘蛛示意">
+          <figcaption>示意：GEO 地圖圈選、SEO 抓取示意（佔位）</figcaption>
+        </figure>
+
+        <h3>小節 A｜GEO 怎麼讓人看到你</h3>
+        <ul>
+          <li><strong>地點/範圍</strong>：選城市、行政區，或以門市為圓心畫半徑（常見為近距離圈選）。(<a
+              href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google 支援</a>)</li>
+          <li><strong>即時性</strong>：促銷檔期、尖峰時段、天氣或活動期間特別好用。</li>
+          <li><strong>門牌資訊要正確</strong>：在 Google/Apple 的商家卡片把地址、營業時間、照片維持最新，才不會把人導錯路。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Edit your Business Profile</a>)</li>
+        </ul>
+
+        <h3>小節 B｜SEO 怎麼讓系統理解你</h3>
+        <ul>
+          <li><strong>抓取與收錄</strong>：搜尋機器人會沿連結找頁面、讀內容並存入索引；是否能被讀到、看得懂，是基礎中的基礎。(<a
+              href="https://developers.google.com/search/docs/crawling-indexing?utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Crawling & Indexing</a>)</li>
+          <li><strong>排序</strong>：結果頁會綜合內容相關度、網站信任感、距離等在地因素（做在地生意時尤其明顯）。(<a
+              href="https://support.google.com/business/answer/7091?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Tips to improve your local ranking</a>)</li>
+        </ul>
+
+        <p class="muted">章末小結：GEO 先把人帶到你附近；SEO 讓你在關鍵字世界裡站得住腳。延伸閱讀：Google《提升在地排名的建議》。</p>
+
+        <hr>
+
+        <h2>3. 三大面向：GEO 場景 / SEO 內容與技術 / 整合打法</h2>
+
+        <h3>3.1 GEO 常見場景（附重點圖一張）</h3>
+        <figure class="mid">
+          <img
+            src="https://www.nss.com.tw/wp-content/uploads/2025/07/AI-%E6%90%9C%E5%B0%8B%E6%99%82%E4%BB%A3%E7%9A%84-GEO-5%E5%A4%A7%E7%AD%96%E7%95%A5.png"
+            alt="GEO 要點圖">
+          <figcaption>GEO 要點：圈選、時段、門市資訊、行動按鈕（佔位）</figcaption>
+        </figure>
+
+        <ul>
+          <li><strong>圈選誰會看到</strong>：以門市為中心抓近距離客群，臨時活動可縮小範圍。(<a
+              href="https://support.google.com/google-ads/answer/1722043?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Target ads to geographic locations</a>)</li>
+          <li><strong>商家檔案完整</strong>：地址、時段、電話、相片、菜單或服務一鍵可見。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Edit your Business Profile</a>)</li>
+          <li><strong>多平台一致</strong>：Google 與 Apple 的商家頁都要同步更新，避免資訊不一。(<a
+              href="https://support.apple.com/guide/apple-business-connect/welcome/web?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Apple Business Connect</a>)</li>
+        </ul>
+
+        <p class="muted">延伸閱讀：Apple Business Connect、Google 商家檔案。</p>
+
+        <h3>3.2 SEO 內容與體驗（附 2×3 提示圖一張）</h3>
+        <figure class="mid">
+          <img src="https://www.eg-creative.com/wp-content/uploads/2023/09/seo_skills-1065x1000.jpg" alt="內容要點 2x3">
+          <figcaption>提示：意圖、標題、結構、圖片文字說明、內部連結、頁面速度（佔位）</figcaption>
+        </figure>
+
+        <ul>
+          <li><strong>寫給讀者的答案</strong>：首頁與服務頁說清楚你做什麼、怎麼聯絡、地點在哪。</li>
+          <li><strong>標題直白</strong>：頁面標題包含主題與城市/商圈名（若是實體服務）。</li>
+          <li><strong>版面好閱讀</strong>：段落短，關鍵資訊放前面，常見問題整理成列表。</li>
+          <li><strong>圖片替代文字</strong>：讓系統知道圖在說什麼。</li>
+          <li><strong>內部路線</strong>：從文章回到服務頁、再到預約/表單，不要讓人迷路。</li>
+          <li><strong>速度與順暢度</strong>：讀取卡、跳來跳去會影響使用感受；用官方工具檢測並修正。(<a
+              href="https://pagespeed.web.dev/?utm_source=chatgpt.com" target="_blank" rel="noopener">PageSpeed
+              Insights</a>)</li>
+        </ul>
+
+        <p class="muted">延伸閱讀：PageSpeed Insights。</p>
+
+        <h3>3.3 GEO × SEO 的整合（可加對比圖）</h3>
+        <figure class="mid">
+          <img src="https://via.placeholder.com/800x420?text=GEO+%E5%8F%8A+SEO+%E6%90%AD%E9%85%8D" alt="GEO × SEO 對比">
+          <figcaption>對比/搭配：左 GEO 即時觸達、右 SEO 常態流量（佔位）</figcaption>
+        </figure>
+
+        <ul>
+          <li><strong>附近看到 → 點進官網</strong>：GEO 把人帶到手機上的商家卡片或你的落地頁，資訊要完整、按鈕要好找（導航、撥打、預約）。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google 商家檔案</a>)</li>
+          <li><strong>搜尋到你 → 確認距離</strong>：SEO 讓內容有機會出現在結果頁；在地型需求會同時看距離與評價，商家資料越完善越有幫助。(<a
+              href="https://support.google.com/business/answer/7091?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">提升在地排名建議</a>)</li>
+          <li><strong>連結標記透明</strong>：合作文、體驗文加上合適的連結標記，避免誤會。(<a
+              href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Qualify Outbound Links</a>)</li>
+        </ul>
+
+        <p class="muted">章末小結：GEO 抓住當下；SEO 養出穩定面。中間用 <strong>落地頁＋商家卡片</strong> 接住流量。</p>
+
+        <hr>
+
+        <h2>4. 入門步驟（實作導引）</h2>
+
+        <h3>4.1 打理商家資訊（GEO 基礎）</h3>
+        <ul>
+          <li>在 Google/Apple 的商家後台認領門市，補齊地址、營業時間、照片與服務敘述；遇到節日或臨時休息，記得更新。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Edit your Business Profile</a>)</li>
+          <li>啟用常用動作：導航、來電、訂位/外帶。</li>
+          <li>請顧客給評價並回覆，累積信任感（在地排序也會參考綜合表現）。(<a
+              href="https://support.google.com/business/answer/7091?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Tips to improve your local ranking</a>)</li>
+        </ul>
+        <p class="muted">工具連結：Google Business Profile、Apple Business Connect。</p>
+
+        <h3>4.2 關鍵查詢與內容主軸（SEO 基礎）</h3>
+        <ul>
+          <li>盤點大家最常問的幾個題目（價格、地點、是否提供到府等），各開一頁說透。</li>
+          <li>在標題與段落自然帶到服務＋地區名稱。</li>
+          <li>把文章彼此串起來，最後導回重點服務頁與表單。(<a
+              href="https://support.google.com/webmasters/answer/12482179?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Search Console：單頁檢查</a>)</li>
+        </ul>
+
+        <h3>4.3 版面與速度</h3>
+        <ul>
+          <li>行動裝置優先：字別太小、按鈕別太擠。</li>
+          <li>圖片壓縮、少塞大型外掛；用 PSI/Lighthouse 找出拖慢的元兇並處理。(<a href="https://pagespeed.web.dev/?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">PageSpeed Insights</a>)</li>
+        </ul>
+
+        <h3>4.4 開 GEO 觸達並接回網站</h3>
+        <ul>
+          <li>以門市為中心設定範圍，搭配時段（午晚餐、週末）或活動投放。(<a
+              href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google 支援</a>)</li>
+          <li>廣告落地頁精簡：地點、主打品、限時資訊、立即行動按鈕。</li>
+          <li>內容頁加上清楚的導航與電話，方便直接轉換。</li>
+        </ul>
+
+        <hr>
+
+        <h2>5. 常見誤區 ＆ 實務準則</h2>
+
+        <h3>5.1 常見誤區</h3>
+        <ul>
+          <li>只投 GEO，不顧網站內容，導進來卻留不住。</li>
+          <li>商家卡片多年不更新，時間或地址錯誤，白白流失來客。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google 支援</a>)</li>
+          <li>文章講很多卻沒行動按鈕，想買也找不到入口。</li>
+          <li>買連結、亂放推薦語，不但沒幫助還有風險。(<a
+              href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Google for Developers</a>)</li>
+        </ul>
+
+        <h3>5.2 實務準則</h3>
+        <ul>
+          <li>任何推廣，都應落到 <strong>好讀、好找、好聯絡</strong> 的頁面。</li>
+          <li>商家卡片與官網資訊要同步，避免矛盾。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Edit your Business Profile</a>)</li>
+          <li>合作內容標示清楚、連結屬性正確。(<a
+              href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Qualify Outbound Links</a>)</li>
+        </ul>
+
+        <p class="muted">章末小結：把坑先補起來，流量自然不會漏。延伸閱讀：Google《連結標記》與《垃圾內容政策》。</p>
+
+        <hr>
+
+        <h2>6. 工具與資源（對照表）</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>工具名稱</th>
+              <th>功能簡述</th>
+              <th>費用/類型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://support.google.com/business/?hl=en&utm_source=chatgpt.com" target="_blank"
+                  rel="noopener">Google Business Profile</a></td>
+              <td>更新門市資訊、時段、相片與互動</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.apple.com/guide/apple-business-connect/welcome/web?utm_source=chatgpt.com"
+                  target="_blank" rel="noopener">Apple Business Connect</a></td>
+              <td>管理 Apple 地圖與相關顯示</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com"
+                  target="_blank" rel="noopener">Google Ads 地點鎖定/半徑</a></td>
+              <td>依地區或半徑投放、設定時段與範圍</td>
+              <td>付費（按點擊/展示計費）</td>
+            </tr>
+            <tr>
+              <td><a href="https://support.google.com/webmasters/answer/12482179?hl=en&utm_source=chatgpt.com"
+                  target="_blank" rel="noopener">Search Console（含單頁檢查）</a></td>
+              <td>查看收錄、查詢字詞、單頁問題排查</td>
+              <td>免費</td>
+            </tr>
+            <tr>
+              <td><a href="https://pagespeed.web.dev/?utm_source=chatgpt.com" target="_blank" rel="noopener">PageSpeed
+                  Insights / Lighthouse</a></td>
+              <td>測速與建議、找出拖慢元件</td>
+              <td>免費</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr>
+
+        <h2>7. 案例流程（演練）</h2>
+
+        <p><strong>情境</strong>：連鎖早午餐新開分店，目標是讓附近上班族與週末家庭客知道你已開張，同時把官網的菜單與訂位曝光出去。</p>
+
+        <h3>節點</h3>
+        <ol>
+          <li><strong>商家卡片到位</strong>：地址、時段、停車資訊、熱門品項、店內照片，一次補齊（Google/Apple 都更新）。(<a
+              href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google 支援</a>)</li>
+          <li><strong>落地頁</strong>：放菜單精選、限定優惠、地圖導航、電話與訂位按鈕。</li>
+          <li><strong>內容支援</strong>：寫 2–3 篇「附近外帶/家庭友善/素食友好」指南，彼此互連並導回落地頁。</li>
+          <li><strong>GEO 投放</strong>：分平日午餐與週末兩個時段圈選半徑；廣告文案對應吃飯情境。(<a
+              href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Google Ads</a>)</li>
+          <li><strong>觀測與調整</strong>：從 Search Console 看大家實際搜尋的詞，補齊常見問題；用 PSI 修圖片與首屏。(<a
+              href="https://support.google.com/webmasters/answer/12482179?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Search Console</a>)</li>
+        </ol>
+
+        <p class="muted">章末小結：附近有人看到你、搜尋也找得到你，兩路流量在落地頁匯合，轉換更順。延伸閱讀：Google《商家檔案編輯指南》。</p>
+
+        <hr>
+
+        <h2>結語</h2>
+        <p>
+          別把 GEO 和 SEO
+          看成競爭關係。前者像招牌與路口導引，後者像指南與內容庫。當你的商家資訊總是最新、網站內容清爽易讀、落地頁能一鍵行動，附近的人會走進來，搜尋的人也會留下來。照著本篇的清單把基本功做好，你會發現在地來客與自然流量，都一起往上走。
+        </p>
+
+        <hr>
+
+        <h3>參考 / 出處</h3>
+        <ul>
+          <li><a href="https://support.google.com/google-ads/answer/6317?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Location targeting - Google Ads Help</a></li>
+          <li><a href="https://developers.google.com/search/docs/fundamentals/how-search-works?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">How Search works — Google</a></li>
+          <li><a href="https://support.google.com/business/answer/3039617?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Edit your Business Profile — Google</a></li>
+          <li><a href="https://developers.google.com/search/docs/crawling-indexing?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Overview of crawling and indexing — Google</a></li>
+          <li><a href="https://support.google.com/business/answer/7091?hl=en&utm_source=chatgpt.com" target="_blank"
+              rel="noopener">Tips to improve your local ranking on Google</a></li>
+          <li><a href="https://support.google.com/google-ads/answer/1722043?hl=en&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Target ads to geographic locations — Google Ads Help</a></li>
+          <li><a href="https://support.apple.com/guide/apple-business-connect/welcome/web?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Apple Business Connect User Guide</a></li>
+          <li><a href="https://pagespeed.web.dev/?utm_source=chatgpt.com" target="_blank" rel="noopener">PageSpeed
+              Insights</a></li>
+          <li><a
+              href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Qualify Outbound Links for SEO</a></li>
+          <li><a href="https://support.google.com/webmasters/answer/12482179?hl=en&utm_source=chatgpt.com"
+              target="_blank" rel="noopener">Inspect and troubleshoot a single page — Search Console Help</a></li>
+        </ul>
+
+      </article>
+    </div>
+  </main>
+</body>
+
+</html>
