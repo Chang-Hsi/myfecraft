@@ -1,0 +1,27 @@
+# netlify.toml
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# 讓預覽與分支部署預設 noindex（避免測試站被抓）
+[context.deploy-preview.environment]
+  VITE_INDEXABLE = "false"
+
+[context.branch-deploy.environment]
+  VITE_INDEXABLE = "false"
+
+# 長快取：Vite 產生的指紋檔
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# 基本安全標頭
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
